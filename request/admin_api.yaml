@@ -12,10 +12,10 @@ steps:
       request:
           type: url
           condition: contains
-          name: '/api/'
+          name: "/api/"
     - name: check_admin
       message: Admin API endpoint detected
       request:
           type: url
           condition: contains
-          name: 'admin'
+          name: "admin"
