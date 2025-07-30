@@ -22,17 +22,18 @@ jobs:
           node-version: '22'
 
       - name: Install Prettier
-        run: npm install --save-dev --save-exact prettier
+        run: npm install -g prettier
 
       - name: Run Prettier
-        run: npx prettier --write . --plugin=prettier-plugin-yaml
+        run: prettier --write . --config .prettierrc
+
+      - name: Remove node_modules
+        run: rm -rf node_modules
 
       - name: Commit changes
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          if ! git diff --staged --quiet; then
-            git commit -m "chore: prettify code"
-            git push
-          fi
+          git commit -m "chore: prettify code" || echo "No changes to commit"
+          git push
