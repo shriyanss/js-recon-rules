@@ -12,4 +12,4 @@ steps:
       request:
           type: url
           condition: contains
-          name: "/api/"
+          name: '/api/'

@@ -7,15 +7,15 @@ type: request
 tech: next
 
 steps:
-  - name: check_api
-    message: API endpoint detected
-    request:
-      type: url
-      condition: contains
-      name: "/api/"
-  - name: check_admin
-    message: Admin API endpoint detected
-    request:
-      type: url
-      condition: contains
-      name: "admin"
+    - name: check_api
+      message: API endpoint detected
+      request:
+          type: url
+          condition: contains
+          name: '/api/'
+    - name: check_admin
+      message: Admin API endpoint detected
+      request:
+          type: url
+          condition: contains
+          name: 'admin'
