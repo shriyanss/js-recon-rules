@@ -4,6 +4,8 @@
 
 ### Added
 
+- Added `detect_postMessage` rule by @shriyanss
+
 ### Changed
 
 ### Fixed

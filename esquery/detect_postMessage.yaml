@@ -1,0 +1,14 @@
+id: detect_postMessage
+name: Detect postMessage event listeners
+author: shriyanss
+description: Detect postMessage event listeners
+severity: info
+type: esquery
+tech: next
+
+steps:
+    - name: check_postMessage
+      message: postMessage event listener detected
+      esquery:
+          type: esquery
+          query: CallExpression[callee.object.name="window"][callee.property.name="addEventListener"][arguments.0.value="message"][arguments.1]
