@@ -1,0 +1,56 @@
+name: Push Checks
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  version_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check version number
+        run: |
+          echo "[i] Checking if the version in the CHANGELOG.md and version.txt matches"
+          CHANGELOG_VERSION=$(cat CHANGELOG.md | grep -E "^## [0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta)(\.[0-9]+)?)?" | head -n 1 | sed -E 's/^## ([0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta)(\.[0-9]+)?)?).*/\1/')
+          VERSION_TXT_VERSION=$(cat version.txt)
+          if [[ "$CHANGELOG_VERSION" != "$VERSION_TXT_VERSION" ]]; then
+            echo "Version number mismatch between CHANGELOG_VERSION and VERSION_TXT_VERSION"
+            exit 1
+          else
+            echo "[✓] Version matches"
+          fi
+
+  prettify:
+    runs-on: ubuntu-latest
+    needs: version_check
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install Prettier
+        run: npm install -g prettier
+
+      - name: Run Prettier
+        run: prettier --write . --config .prettierrc
+
+      - name: Remove node_modules
+        run: rm -rf node_modules
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: prettify code" || echo "No changes to commit"
+          git push
