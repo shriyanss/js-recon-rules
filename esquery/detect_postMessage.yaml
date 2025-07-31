@@ -4,7 +4,8 @@ author: shriyanss
 description: Detect postMessage event listeners
 severity: info
 type: esquery
-tech: next
+tech:
+  - next
 
 steps:
     - name: check_postMessage

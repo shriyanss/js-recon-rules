@@ -4,7 +4,8 @@ author: shriyanss
 description: Detect postMessage event listeners with innerHTML sink
 severity: medium
 type: esquery
-tech: next
+tech: 
+  - next
 
 steps:
     - name: check_postMessage
