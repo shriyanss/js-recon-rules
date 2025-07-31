@@ -4,8 +4,8 @@ author: shriyanss
 description: Detect postMessage event listeners with innerHTML sink
 severity: medium
 type: esquery
-tech: 
-  - next
+tech:
+    - next
 
 steps:
     - name: check_postMessage
@@ -23,8 +23,8 @@ steps:
     - name: check_innerHtml
       message: Check if innerHTML is being assigned something
       requires:
-        - resolve_event_handler_function
+          - resolve_event_handler_function
       checkAssignmentExist:
-        name: resolve_event_handler_function
-        type: innerHTML
-        memberExpression: true
+          name: resolve_event_handler_function
+          type: innerHTML
+          memberExpression: true

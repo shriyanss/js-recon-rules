@@ -3,7 +3,7 @@ name: Missing Authorization Header
 author: shriyanss
 description: Check if the "Authorization" header is present in the request
 tech:
-  - next
+    - next
 severity: medium
 type: request
 

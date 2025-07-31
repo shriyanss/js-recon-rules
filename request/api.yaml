@@ -3,7 +3,7 @@ name: API Path
 author: shriyanss
 description: Check if the URL is a common API path
 tech:
-  - next
+    - next
 severity: info
 type: request
 

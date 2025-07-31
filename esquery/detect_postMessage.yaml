@@ -5,7 +5,7 @@ description: Detect postMessage event listeners
 severity: info
 type: esquery
 tech:
-  - next
+    - next
 
 steps:
     - name: check_postMessage
