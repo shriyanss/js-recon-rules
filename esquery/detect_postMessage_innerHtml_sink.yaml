@@ -1,4 +1,4 @@
-id: id: detect_postMessage_innerHtml_sink
+id: detect_postMessage_innerHtml_sink
 name: postMessage event listeners with innerHTML
 author: shriyanss
 description: Detect postMessage event listeners with innerHTML sink
