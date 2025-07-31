@@ -5,6 +5,7 @@
 ### Added
 
 - Added `detect_postMessage` rule by @shriyanss
+- Added `detect_postMessage_innerHtml_sink` rule by @shriyanss
 
 ### Changed
 
