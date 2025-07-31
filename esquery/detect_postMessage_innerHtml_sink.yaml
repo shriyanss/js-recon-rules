@@ -28,31 +28,3 @@ steps:
         name: resolve_event_handler_function
         type: innerHTML
         memberExpression: true
-name: postMessage event listeners with innerHTML
-author: shriyanss
-description: Detect postMessage event listeners with innerHTML sink
-severity: medium
-type: esquery
-tech: next
-
-steps:
-    - name: check_postMessage
-      message: postMessage event listener detected
-      esquery:
-          type: esquery
-          query: CallExpression[callee.object.name="window"][callee.property.name="addEventListener"][arguments.0.value="message"][arguments.1]
-    # now, check if the second argument is a function and it has call to innerHtml
-    - name: resolve_event_handler_function
-      message: Code for postmessage event handler
-      requires:
-          - check_postMessage
-      postMessageFuncResolve:
-          name: check_postMessage
-    - name: check_innerHtml
-      message: Check if innerHTML is being assigned something
-      requires:
-        - resolve_event_handler_function
-      checkAssignmentExist:
-        name: resolve_event_handler_function
-        type: innerHTML
-        memberExpression: true
