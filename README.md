@@ -5,5 +5,3 @@ This repository contains the rules for [`analyze` module](https://js-recon.io/do
 ## Installation
 
 JS Recon will automatically download the rules from this repository whenever the `analyze` module is run.
-
-
