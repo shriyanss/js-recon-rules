@@ -7,6 +7,7 @@
 ### Changed
 
 - Update rules to use `ast` instead of `esquery` in rule type
+- Change type of `tech` to `string[]` instead of `string`
 
 ### Fixed
 
