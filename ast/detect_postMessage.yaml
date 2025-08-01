@@ -3,7 +3,7 @@ name: Detect postMessage event listeners
 author: shriyanss
 description: Detect postMessage event listeners
 severity: info
-type: esquery
+type: ast
 tech:
     - next
 
