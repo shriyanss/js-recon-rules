@@ -81,4 +81,4 @@ jobs:
         run: rm -rf .github
 
       - name: Run js-recon
-        run: js-recon analyze -r .
+        run: js-recon analyze -r . --validate
