@@ -75,7 +75,7 @@ jobs:
           echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: Install js-recon
-        run: npm install -g js-recon@$TAG
+        run: npm install -g @shriyanss/js-recon@$TAG
 
       - name: Remove .github directory to prevent reading the workflows as rules
         run: rm -rf .github
