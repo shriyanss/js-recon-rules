@@ -54,3 +54,31 @@ jobs:
           git add .
           git commit -m "chore: prettify code" || echo "No changes to commit"
           git push
+
+  validate:
+    runs-on: ubuntu-latest
+    needs: prettify
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+      
+      - name: Get tag
+        run: |
+          TAG=$(cat .github/compatible-tag.txt)
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Install js-recon
+        run: npm install -g js-recon@$TAG
+
+      - name: Remove .github directory to prevent reading the workflows as rules
+        run: rm -rf .github
+
+      - name: Run js-recon
+        run: js-recon analyze -r .
