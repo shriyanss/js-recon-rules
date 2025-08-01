@@ -3,7 +3,7 @@ name: postMessage event listeners with innerHTML
 author: shriyanss
 description: Detect postMessage event listeners with innerHTML sink
 severity: medium
-type: esquery
+type: ast
 tech:
     - next
 

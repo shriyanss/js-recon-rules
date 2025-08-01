@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 1.0.2 - 2025-08-01
+
+### Added
+
+### Changed
+
+- Update rules to use `ast` instead of `esquery` in rule type
+- Change type of `tech` to `string[]` instead of `string`
+
+### Fixed
+
 ## 1.0.1 - 2025-07-31
 
 ### Added
