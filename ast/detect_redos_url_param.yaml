@@ -17,7 +17,7 @@ steps:
       message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
       esquery:
           type: esquery
-          query: ":matches(CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"get\"][callee.object.type=\"NewExpression\"][callee.object.callee.name=\"URLSearchParams\"], MemberExpression[property.name=\"search\"][object.property.name=\"location\"], MemberExpression[property.name=\"search\"][object.name=\"location\"], MemberExpression[property.name=\"hash\"][object.property.name=\"location\"], MemberExpression[property.name=\"hash\"][object.name=\"location\"], MemberExpression[property.name=\"referrer\"][object.name=\"document\"], MemberExpression[property.name=\"URL\"][object.name=\"document\"], CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"useSearchParams\"], CallExpression[callee.name=\"useSearchParams\"])"
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
 
     - name: find_regexp_sink
       message: new RegExp() / RegExp() with a non-literal pattern (potential ReDoS sink)
@@ -25,4 +25,4 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
-          query: ":matches(NewExpression[callee.name=\"RegExp\"]:not([arguments.0.type=\"StringLiteral\"]):not([arguments.0.type=\"RegExpLiteral\"]), CallExpression[callee.name=\"RegExp\"]:not([arguments.0.type=\"StringLiteral\"]):not([arguments.0.type=\"RegExpLiteral\"]))"
+          query: ':matches(NewExpression[callee.name="RegExp"]:not([arguments.0.type="StringLiteral"]):not([arguments.0.type="RegExpLiteral"]), CallExpression[callee.name="RegExp"]:not([arguments.0.type="StringLiteral"]):not([arguments.0.type="RegExpLiteral"]))'

@@ -18,7 +18,7 @@ steps:
       message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
       esquery:
           type: esquery
-          query: ":matches(CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"get\"][callee.object.type=\"NewExpression\"][callee.object.callee.name=\"URLSearchParams\"], MemberExpression[property.name=\"search\"][object.property.name=\"location\"], MemberExpression[property.name=\"search\"][object.name=\"location\"], MemberExpression[property.name=\"hash\"][object.property.name=\"location\"], MemberExpression[property.name=\"hash\"][object.name=\"location\"], MemberExpression[property.name=\"referrer\"][object.name=\"document\"], MemberExpression[property.name=\"URL\"][object.name=\"document\"], CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"useSearchParams\"], CallExpression[callee.name=\"useSearchParams\"])"
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
 
     - name: find_json_parse_call
       message: JSON.parse() call (parses attacker-controlled string into an object)
@@ -26,7 +26,7 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
-          query: "CallExpression[callee.type=\"MemberExpression\"][callee.object.name=\"JSON\"][callee.property.name=\"parse\"]"
+          query: 'CallExpression[callee.type="MemberExpression"][callee.object.name="JSON"][callee.property.name="parse"]'
 
     - name: find_dangerously_set_inner_html_dynamic
       message: dangerouslySetInnerHTML __html with a non-literal value (XSS sink)
@@ -34,4 +34,4 @@ steps:
           - find_json_parse_call
       esquery:
           type: esquery
-          query: "ObjectProperty[key.name=\"__html\"]:not([value.type=\"StringLiteral\"]):not([value.type=\"TemplateLiteral\"]):not([value.type=\"NullLiteral\"]):not([value.type=\"NumericLiteral\"]):not([value.type=\"BooleanLiteral\"])"
+          query: 'ObjectProperty[key.name="__html"]:not([value.type="StringLiteral"]):not([value.type="TemplateLiteral"]):not([value.type="NullLiteral"]):not([value.type="NumericLiteral"]):not([value.type="BooleanLiteral"])'

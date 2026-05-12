@@ -18,7 +18,7 @@ steps:
       message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
       esquery:
           type: esquery
-          query: ":matches(CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"get\"][callee.object.type=\"NewExpression\"][callee.object.callee.name=\"URLSearchParams\"], MemberExpression[property.name=\"search\"][object.property.name=\"location\"], MemberExpression[property.name=\"search\"][object.name=\"location\"], MemberExpression[property.name=\"hash\"][object.property.name=\"location\"], MemberExpression[property.name=\"hash\"][object.name=\"location\"], MemberExpression[property.name=\"referrer\"][object.name=\"document\"], MemberExpression[property.name=\"URL\"][object.name=\"document\"], CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"useSearchParams\"], CallExpression[callee.name=\"useSearchParams\"])"
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
 
     - name: find_document_cookie_sink
       message: document.cookie assignment (cookie manipulation sink)
@@ -26,4 +26,4 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
-          query: "AssignmentExpression[left.type=\"MemberExpression\"][left.property.name=\"cookie\"][left.object.name=\"document\"]:not([right.type=\"StringLiteral\"]):not([right.type=\"NullLiteral\"])"
+          query: 'AssignmentExpression[left.type="MemberExpression"][left.property.name="cookie"][left.object.name="document"]:not([right.type="StringLiteral"]):not([right.type="NullLiteral"])'
