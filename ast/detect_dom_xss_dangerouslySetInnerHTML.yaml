@@ -1,0 +1,30 @@
+id: detect_dom_xss_dangerouslySetInnerHTML
+name: DOM XSS via React dangerouslySetInnerHTML with dynamic value
+author: shriyanss
+description: >-
+    Detects a likely React DOM-XSS sink: a `dangerouslySetInnerHTML={{ __html: X }}`
+    JSX prop where `X` is not a literal string. This rule pairs the dynamic __html
+    sink with the presence of a fetch() call in the same module, which is a strong
+    indicator that the rendered HTML originates from a server response (e.g. a
+    comment body, post content, or user-controllable record). Static-CSS-only uses
+    such as Next.js's internal error theme stylesheet do not contain fetch() and
+    will not trigger this rule.
+severity: high
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_fetch_call
+      message: fetch() call present in the module (likely the source feeding __html)
+      esquery:
+          type: esquery
+          query: ":matches(CallExpression[callee.name=\"fetch\"], CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"fetch\"])"
+
+    - name: find_dangerously_set_inner_html_dynamic
+      message: dangerouslySetInnerHTML __html assigned a non-literal value (XSS sink)
+      requires:
+          - find_fetch_call
+      esquery:
+          type: esquery
+          query: "ObjectProperty[key.name=\"__html\"]:not([value.type=\"StringLiteral\"]):not([value.type=\"TemplateLiteral\"]):not([value.type=\"NullLiteral\"]):not([value.type=\"NumericLiteral\"]):not([value.type=\"BooleanLiteral\"])"

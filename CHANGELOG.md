@@ -5,6 +5,9 @@
 ### Added
 
 - Added `detect_postMessage_function_href` rule by @shriyanss
+- Added `detect_dom_xss_innerHTML_url_source` rule by @shriyanss — flags DOM XSS where a value read from the URL (URLSearchParams, location.search/hash, document.referrer/URL, useSearchParams) is written to `.innerHTML` / `.outerHTML` in the same module.
+- Added `detect_cspt_fetch_url_param` rule by @shriyanss — flags Client-Side Path Traversal where a URL-derived value is interpolated into a `fetch()` URL (template literal or string concatenation) in the same module.
+- Added `detect_dom_xss_dangerouslySetInnerHTML` rule by @shriyanss — flags React `dangerouslySetInnerHTML={{ __html: X }}` where `X` is not a literal and the module also contains a `fetch()` call (filters out static-CSS uses bundled by Next.js).
 
 ### Changed
 
