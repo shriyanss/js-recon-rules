@@ -19,7 +19,7 @@ steps:
       message: fetch() call present in the module (likely the source feeding __html)
       esquery:
           type: esquery
-          query: ":matches(CallExpression[callee.name=\"fetch\"], CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"fetch\"])"
+          query: ':matches(CallExpression[callee.name="fetch"], CallExpression[callee.type="MemberExpression"][callee.property.name="fetch"])'
 
     - name: find_dangerously_set_inner_html_dynamic
       message: dangerouslySetInnerHTML __html assigned a non-literal value (XSS sink)
@@ -27,4 +27,4 @@ steps:
           - find_fetch_call
       esquery:
           type: esquery
-          query: "ObjectProperty[key.name=\"__html\"]:not([value.type=\"StringLiteral\"]):not([value.type=\"TemplateLiteral\"]):not([value.type=\"NullLiteral\"]):not([value.type=\"NumericLiteral\"]):not([value.type=\"BooleanLiteral\"])"
+          query: 'ObjectProperty[key.name="__html"]:not([value.type="StringLiteral"]):not([value.type="TemplateLiteral"]):not([value.type="NullLiteral"]):not([value.type="NumericLiteral"]):not([value.type="BooleanLiteral"])'
