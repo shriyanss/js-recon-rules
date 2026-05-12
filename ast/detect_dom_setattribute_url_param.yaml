@@ -1,0 +1,30 @@
+id: detect_dom_setattribute_url_param
+name: DOM-Data Manipulation via setAttribute with URL parameter
+author: shriyanss
+description: >-
+    Detects a `element.setAttribute(name, value)` call targeting an attribute
+    that can be weaponised (`src`, `href`, `srcdoc`, `action`, `formaction`,
+    `background`, `poster`, `style`, `data`) when a URL-derived value is read
+    in the same chunk/module. `src`/`href` accept `javascript:` URIs, `style`
+    enables CSS injection / data exfiltration, and `srcdoc` permits direct
+    HTML injection into an iframe. Fires only when a URL source and one of
+    these tainted-friendly attribute writes co-occur in the same chunk.
+severity: high
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ":matches(CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"get\"][callee.object.type=\"NewExpression\"][callee.object.callee.name=\"URLSearchParams\"], MemberExpression[property.name=\"search\"][object.property.name=\"location\"], MemberExpression[property.name=\"search\"][object.name=\"location\"], MemberExpression[property.name=\"hash\"][object.property.name=\"location\"], MemberExpression[property.name=\"hash\"][object.name=\"location\"], MemberExpression[property.name=\"referrer\"][object.name=\"document\"], MemberExpression[property.name=\"URL\"][object.name=\"document\"], CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"useSearchParams\"], CallExpression[callee.name=\"useSearchParams\"])"
+
+    - name: find_setattribute_dangerous_attr
+      message: setAttribute targeting an attribute with script/CSS/HTML-execution semantics
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          query: "CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"setAttribute\"][arguments.0.value=/^(src|href|srcdoc|action|formaction|background|poster|style|data|xlink:href)$/i]"

@@ -1,0 +1,28 @@
+id: detect_redos_url_param
+name: DOM-based ReDoS via URL parameter into RegExp
+author: shriyanss
+description: >-
+    Detects `new RegExp(X)` (or `RegExp(X)`) instantiation when a URL-derived
+    value is read in the same chunk/module. JavaScript is single-threaded,
+    so a catastrophic-backtracking pattern from the URL freezes the victim's
+    tab — a client-side denial of service. Fires when both patterns appear
+    in the same chunk/module.
+severity: medium
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ":matches(CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"get\"][callee.object.type=\"NewExpression\"][callee.object.callee.name=\"URLSearchParams\"], MemberExpression[property.name=\"search\"][object.property.name=\"location\"], MemberExpression[property.name=\"search\"][object.name=\"location\"], MemberExpression[property.name=\"hash\"][object.property.name=\"location\"], MemberExpression[property.name=\"hash\"][object.name=\"location\"], MemberExpression[property.name=\"referrer\"][object.name=\"document\"], MemberExpression[property.name=\"URL\"][object.name=\"document\"], CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"useSearchParams\"], CallExpression[callee.name=\"useSearchParams\"])"
+
+    - name: find_regexp_sink
+      message: new RegExp() / RegExp() with a non-literal pattern (potential ReDoS sink)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          query: ":matches(NewExpression[callee.name=\"RegExp\"]:not([arguments.0.type=\"StringLiteral\"]):not([arguments.0.type=\"RegExpLiteral\"]), CallExpression[callee.name=\"RegExp\"]:not([arguments.0.type=\"StringLiteral\"]):not([arguments.0.type=\"RegExpLiteral\"]))"

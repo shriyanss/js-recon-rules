@@ -1,0 +1,29 @@
+id: detect_js_injection_eval
+name: JavaScript Injection via eval / Function / setTimeout-string sink
+author: shriyanss
+description: >-
+    Detects an `eval(...)`, `new Function(...)`, `setTimeout(<string>, ...)`,
+    or `setInterval(<string>, ...)` call when a URL-derived value is also read
+    in the same chunk/module. These sinks execute their string argument as
+    JavaScript in the page origin — full DOM XSS / arbitrary-code-execution
+    primitives. Modern apps almost never need them legitimately, so the
+    combination with a URL source is a strong indicator.
+severity: high
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ":matches(CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"get\"][callee.object.type=\"NewExpression\"][callee.object.callee.name=\"URLSearchParams\"], MemberExpression[property.name=\"search\"][object.property.name=\"location\"], MemberExpression[property.name=\"search\"][object.name=\"location\"], MemberExpression[property.name=\"hash\"][object.property.name=\"location\"], MemberExpression[property.name=\"hash\"][object.name=\"location\"], MemberExpression[property.name=\"referrer\"][object.name=\"document\"], MemberExpression[property.name=\"URL\"][object.name=\"document\"], CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"useSearchParams\"], CallExpression[callee.name=\"useSearchParams\"])"
+
+    - name: find_eval_sink
+      message: Code-execution sink (eval / new Function / setTimeout-string / setInterval-string)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          query: ":matches(CallExpression[callee.name=\"eval\"], CallExpression[callee.type=\"MemberExpression\"][callee.object.name=\"window\"][callee.property.name=\"eval\"], NewExpression[callee.name=\"Function\"], CallExpression[callee.name=\"setTimeout\"]:not([arguments.0.type=\"ArrowFunctionExpression\"]):not([arguments.0.type=\"FunctionExpression\"]):not([arguments.0.type=\"Identifier\"]), CallExpression[callee.name=\"setInterval\"]:not([arguments.0.type=\"ArrowFunctionExpression\"]):not([arguments.0.type=\"FunctionExpression\"]):not([arguments.0.type=\"Identifier\"]))"

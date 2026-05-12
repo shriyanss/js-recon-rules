@@ -1,0 +1,29 @@
+id: detect_storage_manipulation_url_param
+name: HTML5 Storage Manipulation via URL parameter
+author: shriyanss
+description: >-
+    Detects a likely Web-Storage poisoning where a value read from the page URL
+    is written to `localStorage` or `sessionStorage` via `setItem(...)`. Because
+    storage persists across visits, a single poisoning URL plants a payload that
+    fires on every subsequent page load — particularly dangerous when the stored
+    value is later read back and rendered into the DOM. Fires when both the
+    URL source and the storage write appear in the same chunk/module.
+severity: high
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ":matches(CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"get\"][callee.object.type=\"NewExpression\"][callee.object.callee.name=\"URLSearchParams\"], MemberExpression[property.name=\"search\"][object.property.name=\"location\"], MemberExpression[property.name=\"search\"][object.name=\"location\"], MemberExpression[property.name=\"hash\"][object.property.name=\"location\"], MemberExpression[property.name=\"hash\"][object.name=\"location\"], MemberExpression[property.name=\"referrer\"][object.name=\"document\"], MemberExpression[property.name=\"URL\"][object.name=\"document\"], CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"useSearchParams\"], CallExpression[callee.name=\"useSearchParams\"])"
+
+    - name: find_storage_setitem_sink
+      message: localStorage / sessionStorage setItem write (persistent poisoning sink)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          query: "CallExpression[callee.type=\"MemberExpression\"][callee.property.name=\"setItem\"]:matches([callee.object.name=\"localStorage\"], [callee.object.name=\"sessionStorage\"], [callee.object.property.name=\"localStorage\"], [callee.object.property.name=\"sessionStorage\"])"
