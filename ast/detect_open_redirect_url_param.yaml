@@ -1,0 +1,29 @@
+id: detect_open_redirect_url_param
+name: DOM-based Open Redirect via URL parameter
+author: shriyanss
+description: >-
+    Detects a likely DOM-based open redirect where a value read from the page URL
+    (URLSearchParams, location.search/hash, document.referrer/URL, useSearchParams)
+    flows into a navigation sink — `window.location.href = X`, `location.assign(X)`,
+    `location.replace(X)`, or `window.open(X)`. Without an origin/path allowlist,
+    an attacker can redirect the victim to an arbitrary URL (phishing, token theft,
+    OAuth callback abuse). Fires when both patterns appear in the same chunk/module.
+severity: high
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
+
+    - name: find_navigation_sink
+      message: Navigation sink (window.location.href / location.assign / location.replace / window.open)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          query: ':matches(AssignmentExpression[left.type="MemberExpression"][left.property.name="href"][left.object.type="MemberExpression"][left.object.property.name="location"], AssignmentExpression[left.type="MemberExpression"][left.property.name="href"][left.object.type="Identifier"][left.object.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="assign"][callee.object.type="MemberExpression"][callee.object.property.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="replace"][callee.object.type="MemberExpression"][callee.object.property.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="assign"][callee.object.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="replace"][callee.object.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="open"][callee.object.name="window"])'

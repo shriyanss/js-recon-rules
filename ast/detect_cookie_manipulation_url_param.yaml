@@ -1,0 +1,29 @@
+id: detect_cookie_manipulation_url_param
+name: DOM-based Cookie Manipulation via URL parameter
+author: shriyanss
+description: >-
+    Detects a likely DOM-based cookie manipulation where a value read from the page
+    URL flows into `document.cookie =`. Beyond setting an unexpected cookie value,
+    a `;`-injected attribute (Path, Domain, Expires) can elevate or pin a cookie
+    in ways the application does not expect; if the cookie value is later read back
+    and rendered, this also chains into stored DOM XSS. Fires when both the URL
+    source and the `document.cookie` write appear in the same chunk/module.
+severity: high
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
+
+    - name: find_document_cookie_sink
+      message: document.cookie assignment (cookie manipulation sink)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          query: 'AssignmentExpression[left.type="MemberExpression"][left.property.name="cookie"][left.object.name="document"]:not([right.type="StringLiteral"]):not([right.type="NullLiteral"])'

@@ -1,0 +1,29 @@
+id: detect_ajax_header_manipulation
+name: Ajax Request-Header Manipulation via URL parameter
+author: shriyanss
+description: >-
+    Detects a `fetch(url, { headers: { [k]: v } })` call where the `headers`
+    object has a computed-key property — the header name is variable. Combined
+    with a URL-derived value being read in the same chunk, this is the classic
+    pattern that lets an attacker spoof `Authorization`, `X-Forwarded-For`,
+    `X-Admin-Override`, or any other header that backend middleware trusts.
+    Fires when both patterns appear in the same chunk/module.
+severity: high
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
+
+    - name: find_computed_header_key
+      message: fetch headers object contains a computed-key property (variable header name)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          query: 'ObjectProperty[key.name="headers"][value.type="ObjectExpression"] > ObjectExpression > ObjectProperty[computed=true]'

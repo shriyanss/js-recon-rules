@@ -1,0 +1,28 @@
+id: detect_dom_xss_innerHTML_url_source
+name: DOM XSS via URL parameter into innerHTML
+author: shriyanss
+description: >-
+    Detects a likely DOM-based XSS where a value read from the page URL (via
+    URLSearchParams, window.location.search, window.location.hash, document.referrer,
+    or document.URL) flows into a dynamic assignment to .innerHTML or .outerHTML.
+    Fires only when both the source pattern and a dynamic innerHTML/outerHTML
+    write are present in the same JavaScript chunk/module.
+severity: high
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
+
+    - name: find_innerHTML_sink
+      message: Dynamic value written to .innerHTML or .outerHTML (XSS sink)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          query: 'AssignmentExpression[left.type="MemberExpression"]:matches([left.property.name="innerHTML"], [left.property.name="outerHTML"]):not([right.type="StringLiteral"]):not([right.type="NumericLiteral"]):not([right.type="BooleanLiteral"]):not([right.type="NullLiteral"])'

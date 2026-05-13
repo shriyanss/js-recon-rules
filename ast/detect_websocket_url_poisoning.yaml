@@ -1,0 +1,30 @@
+id: detect_websocket_url_poisoning
+name: WebSocket URL Poisoning via URL parameter
+author: shriyanss
+description: >-
+    Detects a likely WebSocket URL poisoning where the URL passed to
+    `new WebSocket(...)` originates from a value read from the page URL
+    (URLSearchParams / location.search|hash / useSearchParams). An attacker
+    who controls the WebSocket endpoint can push arbitrary messages to the
+    victim page — leading to data injection, UI tampering, or chained XSS if
+    the messages flow into a DOM sink. Fires when both patterns appear in
+    the same chunk/module.
+severity: high
+type: ast
+tech:
+    - next
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
+
+    - name: find_websocket_sink
+      message: new WebSocket() instantiation (URL is attacker-controlled)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          query: 'NewExpression[callee.name="WebSocket"]'
