@@ -26,4 +26,5 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: ':matches(AssignmentExpression[left.type="MemberExpression"][left.property.name="href"][left.object.type="MemberExpression"][left.object.property.name="location"], AssignmentExpression[left.type="MemberExpression"][left.property.name="href"][left.object.type="Identifier"][left.object.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="assign"][callee.object.type="MemberExpression"][callee.object.property.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="replace"][callee.object.type="MemberExpression"][callee.object.property.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="assign"][callee.object.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="replace"][callee.object.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="open"][callee.object.name="window"])'

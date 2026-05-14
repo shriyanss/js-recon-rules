@@ -27,4 +27,5 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: 'NewExpression[callee.name="WebSocket"]'

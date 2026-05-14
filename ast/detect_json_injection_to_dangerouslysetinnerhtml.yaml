@@ -26,6 +26,7 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: 'CallExpression[callee.type="MemberExpression"][callee.object.name="JSON"][callee.property.name="parse"]'
 
     - name: find_dangerously_set_inner_html_dynamic
@@ -34,4 +35,5 @@ steps:
           - find_json_parse_call
       esquery:
           type: esquery
+          taintFrom: find_json_parse_call
           query: 'ObjectProperty[key.name="__html"]:not([value.type="StringLiteral"]):not([value.type="TemplateLiteral"]):not([value.type="NullLiteral"]):not([value.type="NumericLiteral"]):not([value.type="BooleanLiteral"])'

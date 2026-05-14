@@ -26,4 +26,5 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: 'AssignmentExpression[left.type="MemberExpression"][left.property.name="cookie"][left.object.name="document"]:not([right.type="StringLiteral"]):not([right.type="NullLiteral"])'

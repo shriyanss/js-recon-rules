@@ -25,4 +25,5 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: ':matches(NewExpression[callee.name="RegExp"]:not([arguments.0.type="StringLiteral"]):not([arguments.0.type="RegExpLiteral"]), CallExpression[callee.name="RegExp"]:not([arguments.0.type="StringLiteral"]):not([arguments.0.type="RegExpLiteral"]))'

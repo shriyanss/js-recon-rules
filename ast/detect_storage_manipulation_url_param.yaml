@@ -26,4 +26,5 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: 'CallExpression[callee.type="MemberExpression"][callee.property.name="setItem"]:matches([callee.object.name="localStorage"], [callee.object.name="sessionStorage"], [callee.object.property.name="localStorage"], [callee.object.property.name="sessionStorage"])'

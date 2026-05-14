@@ -27,4 +27,5 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: 'CallExpression[callee.type="MemberExpression"][callee.property.name="setAttribute"][arguments.0.value=/^(src|href|srcdoc|action|formaction|background|poster|style|data|xlink:href)$/i]'
