@@ -1,0 +1,15 @@
+id: detect_postMessage_wildcard_origin
+name: Detect postMessage sender with wildcard target origin
+author: shriyanss
+description: Detects calls to window.parent.postMessage (or any postMessage) with a wildcard ("*") as the target origin, which allows any page to receive the message
+severity: low
+type: ast
+tech:
+    - next
+
+steps:
+    - name: check_postMessage_wildcard
+      message: postMessage sent with wildcard target origin "*"
+      esquery:
+          type: esquery
+          query: CallExpression[callee.property.name="postMessage"][arguments.1.value="*"]
