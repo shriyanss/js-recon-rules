@@ -14,13 +14,14 @@ severity: high
 type: ast
 tech:
     - next
+    - vue
 
 steps:
     - name: find_url_param_source
-      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams / useParams)
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams / useParams / Vue useRoute / route.query|params)
       esquery:
           type: esquery
-          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"], CallExpression[callee.type="MemberExpression"][callee.property.name="useParams"], CallExpression[callee.name="useParams"])'
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"], CallExpression[callee.type="MemberExpression"][callee.property.name="useParams"], CallExpression[callee.name="useParams"], CallExpression[callee.name="useRoute"], CallExpression[callee.type="MemberExpression"][callee.property.name="useRoute"], MemberExpression[object.type="MemberExpression"][object.property.name="query"], MemberExpression[object.type="MemberExpression"][object.property.name="params"])'
 
     - name: find_fetch_dynamic_url_sink
       message: fetch() called with a dynamically constructed URL (template literal or string concatenation)
