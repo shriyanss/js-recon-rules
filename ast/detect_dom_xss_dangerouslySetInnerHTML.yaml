@@ -1,6 +1,7 @@
 id: detect_dom_xss_dangerouslySetInnerHTML
 name: DOM XSS via React dangerouslySetInnerHTML with dynamic value
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: >-
     Detects a likely React DOM-XSS sink: a `dangerouslySetInnerHTML={{ __html: X }}`
     JSX prop where `X` is not a literal string. This rule pairs the dynamic __html

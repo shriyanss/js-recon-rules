@@ -1,6 +1,7 @@
 id: detect_postMessage_wildcard_origin
 name: Detect postMessage sender with wildcard target origin
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: Detects calls to window.parent.postMessage (or any postMessage) with a wildcard ("*") as the target origin, which allows any page to receive the message
 severity: low
 type: ast

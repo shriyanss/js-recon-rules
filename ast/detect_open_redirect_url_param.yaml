@@ -1,6 +1,7 @@
 id: detect_open_redirect_url_param
 name: DOM-based Open Redirect via URL parameter
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: >-
     Detects a likely DOM-based open redirect where a value read from the page URL
     (URLSearchParams, location.search/hash, document.referrer/URL, useSearchParams)

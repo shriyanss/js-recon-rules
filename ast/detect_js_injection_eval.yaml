@@ -1,6 +1,7 @@
 id: detect_js_injection_eval
 name: JavaScript Injection via eval / Function / setTimeout-string sink
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: >-
     Detects an `eval(...)`, `new Function(...)`, `setTimeout(<string>, ...)`,
     or `setInterval(<string>, ...)` call when a URL-derived value is also read

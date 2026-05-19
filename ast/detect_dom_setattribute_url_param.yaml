@@ -1,6 +1,7 @@
 id: detect_dom_setattribute_url_param
 name: DOM-Data Manipulation via setAttribute with URL parameter
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: >-
     Detects a `element.setAttribute(name, value)` call targeting an attribute
     that can be weaponised (`src`, `href`, `srcdoc`, `action`, `formaction`,

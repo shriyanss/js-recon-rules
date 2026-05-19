@@ -1,6 +1,7 @@
 id: missing_authorization_header
 name: Missing Authorization Header
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: Check if the "Authorization" header is present in the request
 tech:
     - next

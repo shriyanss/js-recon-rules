@@ -1,6 +1,7 @@
 id: detect_json_injection_to_dangerouslysetinnerhtml
 name: Client-Side JSON Injection into dangerouslySetInnerHTML
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: >-
     Detects a three-way co-occurrence in a single chunk/module: a URL-derived
     value is read, then passed to `JSON.parse(...)`, and the module also contains
