@@ -1,30 +1,33 @@
 id: detect_dom_xss_dangerouslySetInnerHTML
-name: DOM XSS via React dangerouslySetInnerHTML with dynamic value
+name: DOM XSS via raw-HTML sink (React dangerouslySetInnerHTML / Vue v-html) with dynamic value
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: >-
-    Detects a likely React DOM-XSS sink: a `dangerouslySetInnerHTML={{ __html: X }}`
-    JSX prop where `X` is not a literal string. This rule pairs the dynamic __html
-    sink with the presence of a fetch() call in the same module, which is a strong
-    indicator that the rendered HTML originates from a server response (e.g. a
-    comment body, post content, or user-controllable record). Static-CSS-only uses
-    such as Next.js's internal error theme stylesheet do not contain fetch() and
-    will not trigger this rule.
+    Detects a likely DOM-XSS sink: a raw-HTML prop assigned a non-literal value.
+    Covers React's `dangerouslySetInnerHTML={{ __html: X }}` (compiled as an
+    ObjectProperty with key `__html`) and Vue's `v-html="X"` directive (compiled
+    by Vite/Vue's template compiler to an ObjectProperty `{ innerHTML: X }`
+    paired with a `["innerHTML"]` patchFlag tuple). This rule pairs the dynamic
+    sink with the presence of a `fetch()` call in the same module, indicating
+    that the rendered HTML likely originates from a server response (e.g. a
+    comment body, post content, or user-controllable record).
 severity: high
 type: ast
 tech:
     - next
+    - vue
 
 steps:
     - name: find_fetch_call
-      message: fetch() call present in the module (likely the source feeding __html)
+      message: fetch() call present in the module (likely the source feeding the raw-HTML sink)
       esquery:
           type: esquery
           query: ':matches(CallExpression[callee.name="fetch"], CallExpression[callee.type="MemberExpression"][callee.property.name="fetch"])'
 
-    - name: find_dangerously_set_inner_html_dynamic
-      message: dangerouslySetInnerHTML __html assigned a non-literal value (XSS sink)
+    - name: find_raw_html_sink_dynamic
+      message: Raw-HTML sink (__html / innerHTML) assigned a non-literal value (XSS sink)
       requires:
           - find_fetch_call
       esquery:
           type: esquery
-          query: 'ObjectProperty[key.name="__html"]:not([value.type="StringLiteral"]):not([value.type="TemplateLiteral"]):not([value.type="NullLiteral"]):not([value.type="NumericLiteral"]):not([value.type="BooleanLiteral"])'
+          query: ':matches(ObjectProperty[key.name="__html"], ObjectProperty[key.name="innerHTML"]):not([value.type="StringLiteral"]):not([value.type="TemplateLiteral"]):not([value.type="NullLiteral"]):not([value.type="NumericLiteral"]):not([value.type="BooleanLiteral"])'

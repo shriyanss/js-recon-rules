@@ -1,9 +1,10 @@
 id: api_path
 name: API Path
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: Check if the URL is a common API path
 tech:
-    - next
+    - all
 severity: info
 type: request
 

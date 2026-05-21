@@ -1,6 +1,7 @@
 id: detect_postMessage_function_href
 name: Detect .href in the event handler for postMessage event handler
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: Detect .href in the event handler for postMessage event handler
 severity: medium
 type: ast

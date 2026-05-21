@@ -1,6 +1,7 @@
 id: detect_cookie_manipulation_url_param
 name: DOM-based Cookie Manipulation via URL parameter
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: >-
     Detects a likely DOM-based cookie manipulation where a value read from the page
     URL flows into `document.cookie =`. Beyond setting an unexpected cookie value,
@@ -26,4 +27,5 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: 'AssignmentExpression[left.type="MemberExpression"][left.property.name="cookie"][left.object.name="document"]:not([right.type="StringLiteral"]):not([right.type="NullLiteral"])'

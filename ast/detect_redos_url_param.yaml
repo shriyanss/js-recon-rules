@@ -1,6 +1,7 @@
 id: detect_redos_url_param
 name: DOM-based ReDoS via URL parameter into RegExp
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: >-
     Detects `new RegExp(X)` (or `RegExp(X)`) instantiation when a URL-derived
     value is read in the same chunk/module. JavaScript is single-threaded,
@@ -25,4 +26,5 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: ':matches(NewExpression[callee.name="RegExp"]:not([arguments.0.type="StringLiteral"]):not([arguments.0.type="RegExpLiteral"]), CallExpression[callee.name="RegExp"]:not([arguments.0.type="StringLiteral"]):not([arguments.0.type="RegExpLiteral"]))'

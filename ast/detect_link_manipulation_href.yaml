@@ -1,6 +1,7 @@
 id: detect_link_manipulation_href
 name: Link Manipulation via URL parameter into element.href
 author: shriyanss
+js_recon_version: ">=1.3.0"
 description: >-
     Detects an `element.href = X` assignment (or `.setAttribute("href", X)`)
     where a URL-derived value is read in the same chunk. When the href is on
@@ -26,4 +27,5 @@ steps:
           - find_url_param_source
       esquery:
           type: esquery
+          taintFrom: find_url_param_source
           query: ':matches(AssignmentExpression[left.type="MemberExpression"][left.property.name="href"]:not([left.object.property.name="location"]):not([left.object.name="location"]):not([right.type="StringLiteral"]):not([right.type="NullLiteral"]), CallExpression[callee.type="MemberExpression"][callee.property.name="setAttribute"][arguments.0.value="href"])'

@@ -1,0 +1,26 @@
+name: Merge main to dev
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
+
+      - name: Merge main into dev
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git fetch origin main:main
+          git fetch origin dev:dev
+          git checkout dev
+          git merge --no-ff -m "chore: merge changes after release $VERSION" main -X theirs || (git status && git diff && exit 0)
+          git push origin dev
+        env:
+          VERSION: ${{ github.event.release.tag_name }}

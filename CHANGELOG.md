@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 1.2.0 - 2026-05-21
+
+### Added
+
+- Added `detect_postMessage_wildcard_origin` rule by @shriyanss — flags `postMessage` calls where the target origin is the wildcard `"*"`, allowing any page to receive the message.
+
+### Changed
+
+- Added `taintFrom` field to 12 AST rules to formally declare their URL-derived taint sources.
+- Added `js_recon_version` compatibility field to all rules (required as of js-recon v1.3.1).
+- `detect_dom_xss_dangerouslySetInnerHTML`: extended to cover Vue's `v-html` directive (compiled by Vite to `{ innerHTML: X }`); renamed to reflect both React and Vue sinks; sink esquery now matches `ObjectProperty[key.name="innerHTML"]` in addition to `__html`.
+- `detect_cspt_fetch_url_param`: added Vue.js to `tech` list; extended URL-source esquery to cover `useRoute()`, `route.query.<X>`, and `route.params.<X>` for Vue Router taint flow.
+- `detect_dom_xss_innerHTML_url_source`: added Vue.js to `tech` list.
+
+### Fixed
+
 ## 1.1.1 - 2026-05-13
 
 ### Added
