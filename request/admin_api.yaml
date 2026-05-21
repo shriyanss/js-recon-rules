@@ -6,7 +6,7 @@ description: Detect endpoints that have both "admin" and "api" in the path
 severity: info
 type: request
 tech:
-    - next
+    - all
 
 steps:
     - name: check_api
