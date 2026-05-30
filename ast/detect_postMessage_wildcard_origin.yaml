@@ -8,6 +8,7 @@ type: ast
 tech:
     - next
     - react
+    - svelte
 
 steps:
     - name: check_postMessage_wildcard

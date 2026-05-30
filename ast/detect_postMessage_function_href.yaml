@@ -7,6 +7,7 @@ severity: medium
 type: ast
 tech:
     - next
+    - svelte
 
 steps:
     - name: check_postMessage
