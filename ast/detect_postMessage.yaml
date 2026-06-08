@@ -7,10 +7,12 @@ severity: info
 type: ast
 tech:
     - next
+    - react
+    - svelte
 
 steps:
     - name: check_postMessage
       message: postMessage event listener detected
       esquery:
           type: esquery
-          query: CallExpression[callee.object.name="window"][callee.property.name="addEventListener"][arguments.0.value="message"][arguments.1]
+          query: ':matches(CallExpression[callee.object.name="window"][callee.property.name="addEventListener"][arguments.0.value="message"][arguments.1], CallExpression[callee.object.name="window"][callee.property.name="addEventListener"][arguments.0.quasis.0.value.raw="message"][arguments.1])'

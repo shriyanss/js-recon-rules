@@ -16,6 +16,7 @@ type: ast
 tech:
     - next
     - vue
+    - react
 
 steps:
     - name: find_fetch_call
