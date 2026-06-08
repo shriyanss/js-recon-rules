@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## 1.3.0 - 2026-06-08
+
+### Added
+
+- Added `detect_hardcoded_secrets` rule — flags hardcoded API keys and tokens in JS bundles (requires js-recon `>=1.3.1`).
+- Added `detect_postmessage_eval` rule — flags `eval()` or `new Function()` called with data derived from a `postMessage` handler (requires js-recon `>=1.3.1`).
+- Added `skills/` directory with `web_app_pentest.md` and `graphql_pentest.md` skill guides for AI-assisted analysis workflows.
+- Added React tech support to all existing AST rules.
+- Added Svelte and Astro tech support to all existing AST rules.
+
+### Fixed
+
+- `detect_cspt_fetch_url_param`: removed `route.params` from URL-source esquery pattern to eliminate false positives on non-user-controlled route segments.
+- CI workflow: switched from `DEPLOY_KEY` to `GITHUB_TOKEN` with write permission for automated merge-back job.
+
 ## 1.2.0 - 2026-05-21
 
 ### Added
