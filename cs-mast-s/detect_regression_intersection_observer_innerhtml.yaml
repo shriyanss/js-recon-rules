@@ -1,0 +1,21 @@
+id: detect_regression_intersection_observer_innerhtml
+name: "XSS Regression - IntersectionObserver callback → innerHTML (React Vite, IntersectionSink component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a lazy-load XSS sink where an IntersectionObserver
+    callback assigns innerHTML when the observed element enters the viewport
+    (e.target.innerHTML=t, scat=name,id, FP=0 within chunk). Not cross-bundle portable:
+    different single-letter variable names are used for the entry and content variables
+    across bundlers. App-specific: generated from react/complex_vuln_app
+    (IntersectionSink-BUagAbZn.js). Replace the signature with one generated from your
+    own confirmed finding.
+steps:
+    - name: match_intersection_observer_sink
+      message: "CS-MAST-S signature match — IntersectionObserver lazy-load innerHTML XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$92df03528283859ce5d6bbc86e654a3420ee20c10a9f2fed8af033fbf4d64046"

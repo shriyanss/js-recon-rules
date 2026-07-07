@@ -1,0 +1,21 @@
+id: detect_regression_angular_directive_innerhtml
+name: "XSS Regression - Angular directive nativeElement.innerHTML (esbuild)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - angular
+description: >-
+    Regression detection for a direct innerHTML assignment via ElementRef.nativeElement
+    inside a custom Angular directive that conditionally injects HTML content
+    (this.el.nativeElement.innerHTML=this.appHtmlInject, scat=name,id, FP=0 within chunk).
+    The nativeElement and innerHTML property names are Angular framework identifiers that
+    survive minification. App-specific: generated from angular/vuln_app
+    (main-R2OIKKQA.js). Replace the signature with one generated from your own confirmed
+    finding.
+steps:
+    - name: match_directive_innerhtml_sink
+      message: "CS-MAST-S signature match — Angular directive nativeElement.innerHTML XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$e69a7ef30076ce7ac2d846fce0ed9daafa08511bf94ad245af95f7f917619621"

@@ -1,0 +1,21 @@
+id: detect_regression_event_delegation_innerhtml
+name: "XSS Regression - Event delegation + data attribute → innerHTML (React Vite, EventDelegation component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for an event delegation XSS sink where a click handler reads
+    innerHTML content from a data attribute and writes it directly to the DOM
+    (t.current.innerHTML=n.dataset.previewHtml, scat=name,id, FP=0 within chunk). Not
+    cross-bundle portable: different single-letter variable names are assigned to the
+    React ref and the event target. App-specific: generated from react/complex_vuln_app
+    (EventDelegation-Bt91MP3a.js). Replace the signature with one generated from your
+    own confirmed finding.
+steps:
+    - name: match_event_delegation_sink
+      message: "CS-MAST-S signature match — event delegation data-attribute innerHTML XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$6cbbacddc21101f00f52d720e6b25401c9e3388c4480be508db2d6fb56e65c75"

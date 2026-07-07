@@ -1,0 +1,20 @@
+id: detect_regression_vue_watcher_innerhtml
+name: "XSS Regression - Vue watcher callback → innerHTML (Vite, RichEditor component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - vue
+description: >-
+    Regression detection for a Vue watcher-triggered innerHTML XSS sink where a watch()
+    callback writes content to the DOM after applying a partial sanitizer that only
+    strips `<script>` tags (i.value.innerHTML=x(o), scat=name,id, FP=0 within chunk).
+    App-specific: generated from vue/vuln_app (RichEditor-BuIPBUwc.js). Both Vue v-html
+    and watcher innerHTML sinks are in the same chunk; each has a distinct signature.
+    Replace the signature with one generated from your own confirmed finding.
+steps:
+    - name: match_vue_watcher_sink
+      message: "CS-MAST-S signature match — Vue watcher innerHTML XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$2e6714b0309db6ebdbd47edad2b73ba9ee884ad22af65004dc312b9543af0461"

@@ -1,0 +1,20 @@
+id: detect_regression_dsih_react_adminposts
+name: "XSS Regression - dangerouslySetInnerHTML (React Vite, AdminPosts component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a dangerouslySetInnerHTML XSS sink in the AdminPosts
+    component ({__html:t.content}, scat=name,id, FP=0 within chunk). The signature
+    covers the compiled ObjectProperty node and is portable to React Webpack builds
+    of the same app because the prop key `__html` survives minification identically.
+    App-specific: generated from react/vuln_app (AdminPosts-sF37elXI.js). Replace
+    the signature with one generated from your own confirmed finding.
+steps:
+    - name: match_dsih_sink
+      message: "CS-MAST-S signature match — dangerouslySetInnerHTML XSS sink detected (AdminPosts regression)"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$4998ccfce55e88e9ffa8405cd86cbc756f5ef28214325815805bda3dc64b458d"

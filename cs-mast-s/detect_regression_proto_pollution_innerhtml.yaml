@@ -1,0 +1,20 @@
+id: detect_regression_proto_pollution_innerhtml
+name: "XSS Regression - Prototype Pollution → innerHTML (React Vite, ProtoPollution component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a prototype pollution → innerHTML XSS chain in the
+    ProtoPollution component (e.current.innerHTML=r.template, scat=name,id, FP=0 within
+    chunk). Not cross-bundle portable: both bundlers assign different single-letter
+    variable names to the React ref and the polluted config object. App-specific:
+    generated from react/complex_vuln_app (ProtoPollution-CJ2LYWxd.js). Replace the
+    signature with one generated from your own confirmed finding.
+steps:
+    - name: match_proto_pollution_sink
+      message: "CS-MAST-S signature match — prototype pollution → innerHTML XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$61eb86e0a4735d09e6d6cc3347c4846366b15746d558d6cdba236045f6e91417"
