@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.4.0 (unreleased)
+
+### Added
+
+- Added `cs-mast-s/` rule category — a new rule engine type that matches chunks by CS-MAST-S structural signature (PHC string). Requires js-recon `>=1.4.1`.
+- Added `cs-mast-s/detect_regression_dsih_react.yaml` — example regression-detection rule for a confirmed `dangerouslySetInnerHTML` XSS sink in the React Vite test app. Demonstrates the cs-mast-s rule format and workflow.
+
 ## 1.3.0 - 2026-06-08
 
 ### Added
