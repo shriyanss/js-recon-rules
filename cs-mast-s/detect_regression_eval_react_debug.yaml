@@ -1,0 +1,20 @@
+id: detect_regression_eval_react_debug
+name: "JS Injection Regression - eval() (React Vite, DebugConsole component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for an eval() injection sink in the DebugConsole component
+    (eval(expr), scat=name,id, FP=0 within chunk). Portable across Vite and Webpack
+    builds of the same app because eval is a global and the argument name expr is
+    preserved identically by both minifiers. App-specific: generated from react/vuln_app
+    (DebugConsole-CpzVgjQr.js). Replace the signature with one generated from your own
+    confirmed finding.
+steps:
+    - name: match_eval_sink
+      message: "CS-MAST-S signature match — eval() JS injection sink detected (DebugConsole regression)"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$17bd8254344d7bc0ab2f6ffc84f0aa964398f432cb35fae98e2dfc2d446aeeb4"

@@ -1,0 +1,21 @@
+id: detect_regression_promise_chain_innerhtml
+name: "XSS Regression - Promise chain → innerHTML (React Vite, PromiseChainSink component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a deeply-nested promise chain XSS sink where innerHTML is
+    assigned three .then() levels deep from a fetch() call
+    (e.current.innerHTML=t, scat=name,id, FP=0 within chunk). Not cross-bundle portable:
+    different single-letter variable names are assigned to the React ref and the resolved
+    data at each promise layer. App-specific: generated from react/complex_vuln_app
+    (PromiseChainSink-Da-SnGeA.js). Replace the signature with one generated from your
+    own confirmed finding.
+steps:
+    - name: match_promise_chain_sink
+      message: "CS-MAST-S signature match — promise chain innerHTML XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$99887f4bd910210a177c1dcafb7f4c138dad166a2004063ac926cfebd90cb524"

@@ -1,0 +1,21 @@
+id: detect_regression_domparser_innerhtml
+name: "XSS Regression - DOMParser re-serialization → innerHTML (React Vite, DOMParserSink component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a DOMParser re-serialization XSS sink (parse input into a
+    detached DOM tree, then assign body.innerHTML to a live element) in the DOMParserSink
+    component (e.current.innerHTML=n.body.innerHTML, scat=name,id, FP=0 within chunk).
+    Not cross-bundle portable: both minifiers assign different single-letter variable
+    names to the React ref and the parsed document. App-specific: generated from
+    react/complex_vuln_app (DOMParserSink-DLahbbcN.js). Replace the signature with one
+    generated from your own confirmed finding.
+steps:
+    - name: match_domparser_sink
+      message: "CS-MAST-S signature match — DOMParser re-serialization innerHTML XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$d3d8fdf7f24ddf5864c13ad39c405efa155ca885e2d76fe36dca59eee00298f2"

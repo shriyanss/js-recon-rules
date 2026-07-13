@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 1.4.0 - 2026-07-13
+
+### Added
+
+- Added `cs-mast-s/` rule category — a new rule engine type that matches chunks by CS-MAST-S structural signature (PHC string). Requires js-recon `>=1.4.1`.
+- Added `cs-mast-s/detect_regression_dsih_react.yaml` — example regression-detection rule for a confirmed `dangerouslySetInnerHTML` XSS sink in the React Vite test app (`Post` component). Demonstrates the cs-mast-s rule format and workflow.
+- Added 15 additional `cs-mast-s/` regression rules derived from issues #25 and #26 experiments (all `scat=name,id`, FP=0 per chunk):
+    - **React Vite `vuln_app`**: `detect_regression_dsih_react_adminposts` (dangerouslySetInnerHTML AdminPosts), `detect_regression_innerhtml_react_search` (innerHTML Search), `detect_regression_eval_react_debug` (eval DebugConsole), `detect_regression_cspt_fetch_react_docs` (CSPT fetch Docs)
+    - **React Vite `complex_vuln_app`**: `detect_regression_proto_pollution_innerhtml` (C1), `detect_regression_new_function_urlparam` (C2), `detect_regression_domparser_innerhtml` (C3), `detect_regression_settimeout_innerhtml` (C4), `detect_regression_event_delegation_innerhtml` (C5), `detect_regression_dynamic_prop_innerhtml` (C6), `detect_regression_promise_chain_innerhtml` (C7), `detect_regression_intersection_observer_innerhtml` (C8)
+    - **Vue Vite `vuln_app`**: `detect_regression_vue_vhtml_computed` (V1 computed v-html), `detect_regression_vue_watcher_innerhtml` (V2 watcher innerHTML)
+    - **Angular esbuild `vuln_app`**: `detect_regression_angular_safe_html_pipe` (A1 bypassSecurityTrustHtml Pipe), `detect_regression_angular_directive_innerhtml` (A2 directive nativeElement.innerHTML)
+
 ## 1.3.0 - 2026-06-08
 
 ### Added

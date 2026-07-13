@@ -1,0 +1,22 @@
+id: detect_regression_dynamic_prop_innerhtml
+name: "XSS Regression - Dynamic property bracket-notation assignment (React Vite, DynamicPropSink component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a dynamic property name XSS sink where the sink property
+    (innerHTML or outerHTML) is selected at runtime via bracket notation
+    (e.current[i]=t, scat=name,id, FP=0 within chunk). The signature fingerprints the
+    bracket-assignment node even though no literal `innerHTML` string appears at the
+    call site. Not cross-bundle portable: Webpack inlines the SINK_PROPS object into a
+    ternary and renames all variables. App-specific: generated from react/complex_vuln_app
+    (DynamicPropSink-4A-b8Ib-.js). Replace the signature with one generated from your
+    own confirmed finding.
+steps:
+    - name: match_dynamic_prop_sink
+      message: "CS-MAST-S signature match — dynamic property bracket-notation XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$9d8fb710181628db0c22d81cddd46c9dac556123858c4eb667426506664b60b8"

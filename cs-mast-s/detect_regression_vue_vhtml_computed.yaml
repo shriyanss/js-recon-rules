@@ -1,0 +1,20 @@
+id: detect_regression_vue_vhtml_computed
+name: "XSS Regression - Vue v-html bound to computed chain (Vite, RichEditor component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - vue
+description: >-
+    Regression detection for a Vue v-html XSS sink where the directive is bound to a
+    computed property that applies a 3-step transformation chain (innerHTML:f.value,
+    scat=name,id, FP=0 within chunk). Vue's template compiler emits a compiled ObjectProperty
+    similar to React's dangerouslySetInnerHTML. App-specific: generated from vue/vuln_app
+    (RichEditor-BuIPBUwc.js). Replace the signature with one generated from your own
+    confirmed finding.
+steps:
+    - name: match_vue_vhtml_sink
+      message: "CS-MAST-S signature match — Vue v-html computed chain XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$9482578f34a3238d5c69f7a3aa2b1c165298b4eecff8a85250ae58d5de1e1e98"

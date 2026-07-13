@@ -1,0 +1,33 @@
+id: detect_regression_dsih_react
+name: XSS Regression - dangerouslySetInnerHTML (React Vite, Post component)
+author: shriyanss
+js_recon_version: ">=1.4.1"
+description: >-
+    Detects a previously confirmed dangerouslySetInnerHTML XSS sink via its
+    CS-MAST-S signature (scat=name,id). This rule is app-specific: the
+    signature was generated from the Post component of the React Vite vuln_app
+    test application and will only match that exact bundle.
+
+    To adapt this rule for your own app:
+    1. Run `js-recon analyze` with the AST rule detect_dom_xss_dangerouslySetInnerHTML
+       to confirm the sink.
+    2. Use `js-recon cs-mast --scat name,id --ct` to inspect chunk signatures, or run
+       a custom script using the @shriyanss/cs-mast library to extract the per-node
+       signature (scat=name,id, FP=0 per #25 experiment).
+    3. Replace the signature below with your generated PHC string.
+
+    Cross-bundle portability note (from issue #26 experiment):
+    - scat=name,id is portable for framework constants (dangerouslySetInnerHTML,
+      eval, bypassSecurityTrustHtml) that survive minification identically.
+    - For complex components using generic single-letter variable names, use
+      scat=id which is structurally portable across bundlers (but has higher FP rate).
+severity: high
+type: cs-mast-s
+tech:
+    - react
+
+steps:
+    - name: match_dsih_sink
+      message: CS-MAST-S signature match — dangerouslySetInnerHTML XSS sink detected (regression)
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$1a572a605f850b1396d0d0950ba1f5c2c2d9f65eebb2fca04ce8f167e32b0c68"

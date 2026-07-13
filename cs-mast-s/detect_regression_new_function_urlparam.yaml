@@ -1,0 +1,20 @@
+id: detect_regression_new_function_urlparam
+name: "JS Injection Regression - new Function() from URL param (React Vite, NewFunction component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a new Function() code injection sink built from a URL
+    parameter (Function(`value`,e), scat=name,id, FP=0 within chunk). Not cross-bundle
+    portable: Vite/Rolldown drops the `new` keyword producing a CallExpression, while
+    Webpack keeps it as a NewExpression, creating structurally different AST nodes.
+    App-specific: generated from react/complex_vuln_app (NewFunction-Dg8bb7ia.js).
+    Replace the signature with one generated from your own confirmed finding.
+steps:
+    - name: match_new_function_sink
+      message: "CS-MAST-S signature match — new Function() code injection sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$7172839f545d6074f453de556942bc3cda3af331450873273e49a3c8432dead6"

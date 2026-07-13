@@ -1,0 +1,23 @@
+id: detect_regression_angular_safe_html_pipe
+name: "XSS Regression - Angular bypassSecurityTrustHtml in SafeHtmlPipe (esbuild)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - angular
+description: >-
+    Regression detection for Angular's bypassSecurityTrustHtml() called inside a custom
+    Pipe.transform method (this.sanitizer.bypassSecurityTrustHtml(e), scat=name,id,
+    FP=0 for isolated chunk but matches 2 nodes in the full main bundle). The second
+    match is a real second call to bypassSecurityTrustHtml in a PostDetail component —
+    CS-MAST-S correctly identifies both bypass calls. The bypassSecurityTrustHtml
+    identifier is an Angular framework constant that survives minification, making this
+    signature portable across Angular builds of the same app. App-specific: generated
+    from angular/vuln_app (main-R2OIKKQA.js). Replace the signature with one generated
+    from your own confirmed finding.
+steps:
+    - name: match_bypass_security_trust_html
+      message: "CS-MAST-S signature match — Angular bypassSecurityTrustHtml() bypass detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$7683fdc71d56522c6027a90a3c17c13cb61ed5dff174279b3b82ccba45229c97"

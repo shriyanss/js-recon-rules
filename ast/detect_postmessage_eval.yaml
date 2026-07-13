@@ -17,6 +17,7 @@ tech:
     - next
     - svelte
     - vue
+    - angular
 
 steps:
     - name: find_postmessage_listener

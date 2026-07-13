@@ -8,6 +8,7 @@ type: ast
 tech:
     - next
     - svelte
+    - angular
 
 steps:
     - name: check_postMessage

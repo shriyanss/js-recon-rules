@@ -1,0 +1,23 @@
+id: detect_regression_cspt_fetch_react_docs
+name: "CSPT Regression - fetch() with URL parameter (React Vite, Docs component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: medium
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a client-side path traversal sink in the Docs component
+    (fetch(`/api/docs/${e}`), scat=name,id, FP=0 within its own chunk). Cross-chunk
+    behaviour: the same structural pattern (fetch + template literal with a single param)
+    appears in other chunks of the same app (e.g. Post, Profile) that also use
+    fetch(`/api/route/${param}`). Those additional matches are likely real CSPT
+    candidates, not noise — each warranting its own review. Not cross-bundle portable:
+    Webpack compiles template literals to .concat() calls, producing a structurally
+    different AST. App-specific: generated from react/vuln_app (Docs-_rCVZTqr.js).
+    Replace the signature with one generated from your own confirmed finding.
+steps:
+    - name: match_cspt_sink
+      message: "CS-MAST-S signature match — CSPT fetch() sink detected (Docs regression)"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$fca4d73b14f3430b1dec38d4adcc72715df7b748af1ea8a9b8f8d7f198a99ca9"

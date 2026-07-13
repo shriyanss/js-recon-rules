@@ -1,0 +1,20 @@
+id: detect_regression_innerhtml_react_search
+name: "XSS Regression - innerHTML assignment (React Vite, Search component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a direct innerHTML assignment XSS sink in the Search
+    component (l.current.innerHTML, scat=name,id, FP=0 within chunk). Not cross-bundle
+    portable: Vite and Webpack assign different single-letter variable names to the React
+    ref (l vs h), so the signature only matches the specific Vite build. App-specific:
+    generated from react/vuln_app (Search-DE0rmJFV.js). Replace the signature with one
+    generated from your own confirmed finding.
+steps:
+    - name: match_innerhtml_sink
+      message: "CS-MAST-S signature match — innerHTML XSS sink detected (Search regression)"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$4e734be5a19d4c5db71d953592165955bd9935e3af4dcd22eefb0a8f4e471b87"

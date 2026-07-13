@@ -1,0 +1,21 @@
+id: detect_regression_settimeout_innerhtml
+name: "XSS Regression - setTimeout-deferred innerHTML (React Vite, TimeoutSink component)"
+author: shriyanss
+js_recon_version: ">=1.4.1"
+severity: high
+type: cs-mast-s
+tech:
+    - react
+description: >-
+    Regression detection for a setTimeout-deferred innerHTML XSS sink where content is
+    written to the DOM asynchronously after a delay (r.innerHTML=n inside a timer
+    callback, scat=name,id, FP=0 within chunk). Not cross-bundle portable: Webpack
+    compiles arrow functions to regular function expressions, changing the AST node type
+    at the callback boundary. App-specific: generated from react/complex_vuln_app
+    (TimeoutSink-BTG48a5m.js). Replace the signature with one generated from your own
+    confirmed finding.
+steps:
+    - name: match_timeout_innerhtml_sink
+      message: "CS-MAST-S signature match — setTimeout-deferred innerHTML XSS sink detected"
+      csMastS:
+          signature: "$v=1$hash=sha256,lang=js,prsr=-babel/parser,scat=name_id$0d52964d8e302aa7e40c75e9cbced31320c9cd62364468dcff221d036a955de6"
