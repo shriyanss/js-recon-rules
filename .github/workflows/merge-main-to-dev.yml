@@ -7,6 +7,7 @@ on:
 jobs:
   merge:
     runs-on: ubuntu-latest
+    environment: commit-signing
     permissions:
       contents: write
     steps:
@@ -15,10 +16,15 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Configure SSH commit signing
+        uses: shriyanss/verified-commit-action@v1
+        with:
+          ssh-private-key: ${{ secrets.JS_RECON_SIGNING_KEY }}
+          commit-name: "github-actions[bot]"
+          commit-email: ${{ secrets.JS_RECON_SIGNING_EMAIL }}
+
       - name: Merge main into dev
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git fetch origin main:main
           git fetch origin dev:dev
           git checkout dev
