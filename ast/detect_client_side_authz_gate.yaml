@@ -1,0 +1,31 @@
+id: detect_client_side_authz_gate
+name: Client-side authorization gate on role/entitlement flag
+author: shriyanss
+js_recon_version: ">=1.4.1-alpha.4"
+description: >-
+    Detects an `if` statement whose condition reads a role or entitlement flag
+    (e.g. isAdmin, isPaid, isPremium, subscriptionType, userRole,
+    permissionLevel, accessLevel) directly off an object and uses it to decide
+    whether to render UI or call an endpoint. When the backend re-derives the
+    same decision independently this is harmless, but when the flag is only
+    checked in the frontend, an attacker can flip the value in the response
+    before the JS reads it (or call the underlying endpoint directly) and reach
+    functionality the UI never exposes. This rule flags the client-side gate
+    itself as a candidate for manual verification that the server enforces the
+    same boundary on the actual request — it is not proof of a missing
+    server-side check.
+severity: info
+type: ast
+tech:
+    - react
+    - next
+    - vue
+    - svelte
+    - angular
+
+steps:
+    - name: find_authz_gate
+      message: Client-side conditional gating on a role/entitlement flag found
+      esquery:
+          type: esquery
+          query: ':matches(IfStatement > .test MemberExpression[property.name=/^(isAdmin|isPaid|isPremium|isSubscribed|subscriptionType|userRole|permissionLevel|accessLevel)$/], ConditionalExpression > .test MemberExpression[property.name=/^(isAdmin|isPaid|isPremium|isSubscribed|subscriptionType|userRole|permissionLevel|accessLevel)$/], LogicalExpression[operator="&&"] > .left MemberExpression[property.name=/^(isAdmin|isPaid|isPremium|isSubscribed|subscriptionType|userRole|permissionLevel|accessLevel)$/])'
