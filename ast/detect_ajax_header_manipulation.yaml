@@ -8,7 +8,11 @@ description: >-
     with a URL-derived value being read in the same chunk, this is the classic
     pattern that lets an attacker spoof `Authorization`, `X-Forwarded-For`,
     `X-Admin-Override`, or any other header that backend middleware trusts.
-    Fires when both patterns appear in the same chunk/module.
+    Fires when both patterns appear in the same chunk/module. Excludes
+    bracket-notation properties whose key is actually a fixed string (a plain
+    string literal or an interpolation-free template literal, e.g.
+    `["Content-Type"]: v`), since the header name isn't attacker-controllable
+    in that case even though the AST shape is a computed property.
 severity: high
 type: ast
 tech:
@@ -30,4 +34,4 @@ steps:
       esquery:
           type: esquery
           taintFrom: find_url_param_source
-          query: 'ObjectProperty[key.name="headers"][value.type="ObjectExpression"] > ObjectExpression > ObjectProperty[computed=true]'
+          query: 'ObjectProperty[key.name="headers"][value.type="ObjectExpression"] > ObjectExpression > ObjectProperty[computed=true]:not([key.type="StringLiteral"]):not([key.expressions.length=0])'
