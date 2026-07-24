@@ -1,0 +1,37 @@
+id: detect_insecure_random_token_storage
+name: Insecure PRNG (Math.random) feeding a session/token storage sink
+author: shriyanss
+js_recon_version: ">=1.4.1-alpha.4"
+description: >-
+    Detects a value derived from `Math.random()` being written to
+    `document.cookie` or `localStorage`/`sessionStorage.setItem(...)`.
+    `Math.random()` is not a cryptographically secure PRNG — its output is
+    predictable from a handful of samples — so a session, CSRF, or other
+    security-relevant token generated this way and persisted client-side can
+    be predicted or brute-forced by an attacker who can observe (or is
+    handed) a few generated values. Fires when both the `Math.random()` call
+    and the storage/cookie write appear in the same chunk/module.
+severity: medium
+type: ast
+tech:
+    - react
+    - next
+    - vue
+    - svelte
+    - angular
+
+steps:
+    - name: find_math_random_source
+      message: Math.random() value generated (non-cryptographic PRNG)
+      esquery:
+          type: esquery
+          query: 'CallExpression[callee.type="MemberExpression"][callee.object.name="Math"][callee.property.name="random"]'
+
+    - name: find_token_storage_sink
+      message: Math.random()-derived value written to a cookie or Web Storage sink
+      requires:
+          - find_math_random_source
+      esquery:
+          type: esquery
+          taintFrom: find_math_random_source
+          query: ':matches(AssignmentExpression[left.type="MemberExpression"][left.object.name="document"][left.property.name="cookie"], CallExpression[callee.type="MemberExpression"][callee.property.name="setItem"]:matches([callee.object.name="localStorage"], [callee.object.name="sessionStorage"], [callee.object.property.name="localStorage"], [callee.object.property.name="sessionStorage"]))'
