@@ -9,7 +9,10 @@ description: >-
     in the same chunk/module. `src`/`href` accept `javascript:` URIs, `style`
     enables CSS injection / data exfiltration, and `srcdoc` permits direct
     HTML injection into an iframe. Fires only when a URL source and one of
-    these tainted-friendly attribute writes co-occur in the same chunk.
+    these tainted-friendly attribute writes co-occur in the same chunk. Skips
+    the write if the attribute value is the direct return of a call to a
+    common URL/HTML sanitizer (e.g. sanitizeUrl, DOMPurify.sanitize,
+    encodeURIComponent).
 severity: high
 type: ast
 tech:
@@ -31,4 +34,4 @@ steps:
       esquery:
           type: esquery
           taintFrom: find_url_param_source
-          query: 'CallExpression[callee.type="MemberExpression"][callee.property.name="setAttribute"][arguments.0.value=/^(src|href|srcdoc|action|formaction|background|poster|style|data|xlink:href)$/i]'
+          query: 'CallExpression[callee.type="MemberExpression"][callee.property.name="setAttribute"][arguments.0.value=/^(src|href|srcdoc|action|formaction|background|poster|style|data|xlink:href)$/i]:not(:matches([arguments.1.callee.name=/^(sanitizeUrl|sanitizeURL|sanitize|sanitizeHtml|isSafeUrl|escapeHtml|escape|clean|encodeURIComponent|encodeURI)$/i], [arguments.1.callee.property.name=/^(sanitizeUrl|sanitizeURL|sanitize|sanitizeHtml|isSafeUrl|escapeHtml|escape|clean)$/i]))'
