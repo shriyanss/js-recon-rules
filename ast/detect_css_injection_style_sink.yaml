@@ -1,0 +1,40 @@
+id: detect_css_injection_style_sink
+name: CSS Injection via URL parameter into a style sink
+author: shriyanss
+js_recon_version: ">=1.4.1-alpha.4"
+description: >-
+    Detects a likely CSS-injection sink where a value read from the page URL
+    (URLSearchParams, window.location.search/hash, document.referrer,
+    document.URL) is written into `element.style.cssText`, passed to
+    `element.setAttribute("style", ...)`, or interpolated into a CSS-in-JS
+    tagged template (`styled.<tag>`/`styled(Component)`/`css` from
+    styled-components-style libraries). Attacker-controlled CSS can exfiltrate
+    other page data via request-issuing selectors (`@import`, `background-image:
+    url()`) or conditional-render primitives, entirely without JavaScript
+    execution, so this sink is dangerous even under a strict script-blocking CSP.
+    Fires when both the source pattern and one of these style sinks are present
+    in the same chunk/module.
+severity: medium
+type: ast
+tech:
+    - next
+    - vue
+    - react
+    - svelte
+    - angular
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
+
+    - name: find_style_sink
+      message: URL-derived value written into a style sink (style.cssText / setAttribute("style", ...) / CSS-in-JS tagged template)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          taintFrom: find_url_param_source
+          query: ':matches(AssignmentExpression[left.type="MemberExpression"][left.property.name="cssText"][left.object.type="MemberExpression"][left.object.property.name="style"], CallExpression[callee.type="MemberExpression"][callee.property.name="setAttribute"][arguments.0.value="style"], TaggedTemplateExpression[tag.name="css"][quasi.expressions.0], TaggedTemplateExpression[tag.object.name="styled"][quasi.expressions.0], TaggedTemplateExpression[tag.callee.name="styled"][quasi.expressions.0])'

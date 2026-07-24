@@ -1,0 +1,38 @@
+id: detect_cspt_xhr_url_param
+name: Client-Side Path Traversal (CSPT) — URL parameter in XHR/axios URL
+author: shriyanss
+js_recon_version: ">=1.4.1-alpha.4"
+description: >-
+    Detects a likely Client-Side Path Traversal where a value read from the page URL
+    (URLSearchParams, window.location.search/hash, document.referrer, document.URL)
+    is interpolated into an XMLHttpRequest.open() or axios request URL via a template
+    literal or string concatenation, without encodeURIComponent / encodeURI
+    normalization. The browser collapses `..` segments before the request is sent,
+    so an attacker can redirect the request to a different API path and, since XHR
+    and axios calls carry the same cookies/auth headers as fetch(), reach the same
+    CSPT2CSRF-style impact. Fires when both the source pattern and an XHR/axios
+    sink are present in the same chunk/module.
+severity: high
+type: ast
+tech:
+    - next
+    - vue
+    - react
+    - svelte
+    - angular
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams / useParams / Vue useRoute / route.query|params)
+      esquery:
+          type: esquery
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"], CallExpression[callee.name="useRoute"], CallExpression[callee.type="MemberExpression"][callee.property.name="useRoute"], MemberExpression[object.type="MemberExpression"][object.property.name="query"])'
+
+    - name: find_xhr_axios_dynamic_url_sink
+      message: XMLHttpRequest.open() or axios request called with a dynamically constructed URL (template literal or string concatenation)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          taintFrom: find_url_param_source
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="open"][arguments.1.type="TemplateLiteral"][arguments.1.expressions.0], CallExpression[callee.type="MemberExpression"][callee.property.name="open"][arguments.1.type="BinaryExpression"][arguments.1.operator="+"], CallExpression[callee.type="MemberExpression"][callee.object.name="axios"][callee.property.name=/^(get|post|put|delete|patch|head|options)$/][arguments.0.type="TemplateLiteral"][arguments.0.expressions.0], CallExpression[callee.type="MemberExpression"][callee.object.name="axios"][callee.property.name=/^(get|post|put|delete|patch|head|options)$/][arguments.0.type="BinaryExpression"][arguments.0.operator="+"], CallExpression[callee.name="axios"][arguments.0.type="TemplateLiteral"][arguments.0.expressions.0], CallExpression[callee.name="axios"][arguments.0.type="BinaryExpression"][arguments.0.operator="+"]):not(:matches([arguments.1.expressions.length=1][arguments.1.expressions.0.callee.name=/^(encodeURIComponent|encodeURI)$/i], [arguments.1.right.callee.name=/^(encodeURIComponent|encodeURI)$/i], [arguments.0.expressions.length=1][arguments.0.expressions.0.callee.name=/^(encodeURIComponent|encodeURI)$/i], [arguments.0.right.callee.name=/^(encodeURIComponent|encodeURI)$/i]))'
