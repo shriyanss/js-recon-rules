@@ -1,7 +1,7 @@
 id: detect_redos_url_param
 name: DOM-based ReDoS via URL parameter into RegExp
 author: shriyanss
-js_recon_version: ">=1.3.0"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects `new RegExp(X)` (or `RegExp(X)`) instantiation when a URL-derived
     value is read in the same chunk/module. JavaScript is single-threaded,

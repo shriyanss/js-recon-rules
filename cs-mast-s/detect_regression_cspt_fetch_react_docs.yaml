@@ -1,7 +1,7 @@
 id: detect_regression_cspt_fetch_react_docs
 name: "CSPT Regression - fetch() with URL parameter (React Vite, Docs component)"
 author: shriyanss
-js_recon_version: ">=1.4.1"
+js_recon_version: ">=1.4.1-alpha.5"
 severity: medium
 type: cs-mast-s
 tech:

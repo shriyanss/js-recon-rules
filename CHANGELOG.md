@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 1.4.1 - 2026-07-24
+
+### Added
+
+- Rules now support an optional `js_recon_max_version` field for a rule that relies on a feature since retired by js-recon.
+- `.github/workflows/push_checks.yml`'s `validate` job now builds js-recon from source, checked out at the `js-recon/js-recon` branch matching this branch's name, instead of installing the last tagged npm release — required so an in-development rule can be validated against an in-development, not-yet-released js-recon feature. It also now runs `--determine-compatible-version` in addition to `--validate`, so a rule with an incorrect `js_recon_version`/`js_recon_max_version` now fails CI.
+
+### Fixed
+
+- Corrected `js_recon_version` on every existing rule via `js-recon analyze --apply-compatible-versions`, which computes the version a rule actually requires from the features it uses rather than a hand-picked guess.
+
 ## 1.4.0 - 2026-07-13
 
 ### Added

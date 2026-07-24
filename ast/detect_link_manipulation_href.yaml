@@ -1,7 +1,7 @@
 id: detect_link_manipulation_href
 name: Link Manipulation via URL parameter into element.href
 author: shriyanss
-js_recon_version: ">=1.3.0"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects an `element.href = X` assignment (or `.setAttribute("href", X)`)
     where a URL-derived value is read in the same chunk. When the href is on
