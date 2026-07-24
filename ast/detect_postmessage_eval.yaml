@@ -10,6 +10,10 @@ description: >-
     origin's context — a full arbitrary-code-execution / DOM XSS primitive.
     The rule fires when both primitives coexist in the same chunk, which is a
     strong signal that the eval() is reachable from the message handler.
+    Requires the listener target to be `window` specifically, so it doesn't
+    fire on unrelated "message"-event listeners on other objects (a Web
+    Worker, WebSocket, EventSource, or BroadcastChannel), which aren't
+    reachable by a cross-origin postMessage sender.
 severity: high
 type: ast
 tech:
@@ -24,7 +28,7 @@ steps:
       message: window.addEventListener('message', ...) handler found
       esquery:
           type: esquery
-          query: ':matches(CallExpression[callee.property.name="addEventListener"][arguments.0.value="message"], CallExpression[callee.property.name="addEventListener"][arguments.0.quasis.0.value.raw="message"])'
+          query: ':matches(CallExpression[callee.object.name="window"][callee.property.name="addEventListener"][arguments.0.value="message"], CallExpression[callee.object.name="window"][callee.property.name="addEventListener"][arguments.0.quasis.0.value.raw="message"])'
 
     - name: find_eval_in_chunk
       message: eval() call found in the same chunk as the postMessage listener
