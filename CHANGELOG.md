@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.4.2 - 2026-07-24
+
+### Added
+
+- Added `detect_cspt_xhr_url_param` — Client-Side Path Traversal via `XMLHttpRequest.open()`/axios, same taint pattern as `detect_cspt_fetch_url_param` but for the XHR/axios sink.
+- Added `detect_postmessage_weak_origin_check` — flags a `postMessage` handler whose origin validation relies on a bypassable string-comparison idiom (`.endsWith()`, `.includes()`, `.indexOf()`, `.startsWith()`) instead of exact equality.
+- Added `detect_css_injection_style_sink` — flags a URL-derived value written into `element.style.cssText`, `setAttribute("style", ...)`, or a CSS-in-JS tagged template.
+
 ## 1.4.1 - 2026-07-24
 
 ### Added
