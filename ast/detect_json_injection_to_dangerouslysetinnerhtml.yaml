@@ -8,7 +8,9 @@ description: >-
     a dynamic `dangerouslySetInnerHTML={{ __html: X }}` sink. The compiled output
     of `JSON.parse(searchParams.get("config"))` flowing into a React render
     creates a stored-style XSS primitive — attacker-controlled JSON field values
-    appear unsanitised in the DOM.
+    appear unsanitised in the DOM. Skips the sink if the assigned value is the
+    direct return of a call to a common sanitizer/encoder function (e.g.
+    DOMPurify.sanitize, sanitizeHtml, escapeHtml).
 severity: high
 type: ast
 tech:
@@ -37,4 +39,4 @@ steps:
       esquery:
           type: esquery
           taintFrom: find_json_parse_call
-          query: 'ObjectProperty[key.name="__html"]:not([value.type="StringLiteral"]):not([value.type="TemplateLiteral"]):not([value.type="NullLiteral"]):not([value.type="NumericLiteral"]):not([value.type="BooleanLiteral"])'
+          query: 'ObjectProperty[key.name="__html"]:not([value.type="StringLiteral"]):not([value.type="TemplateLiteral"]):not([value.type="NullLiteral"]):not([value.type="NumericLiteral"]):not([value.type="BooleanLiteral"]):not(:matches([value.callee.name=/^(sanitize|sanitizeHtml|sanitizeHTML|purify|escapeHtml|escapeHTML|escape|clean|encode|encodeHTML)$/i], [value.callee.property.name=/^(sanitize|sanitizeHtml|sanitizeHTML|purify|escapeHtml|escapeHTML|escape|clean|encode|encodeHTML)$/i]))'
