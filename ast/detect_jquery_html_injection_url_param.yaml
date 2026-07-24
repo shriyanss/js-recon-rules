@@ -1,0 +1,38 @@
+id: detect_jquery_html_injection_url_param
+name: XSS via URL parameter into a jQuery HTML-building sink
+author: shriyanss
+js_recon_version: ">=1.4.1-alpha.4"
+description: >-
+    Detects a likely DOM-XSS where a value read from the page URL
+    (URLSearchParams, window.location.search/hash, document.referrer,
+    document.URL) is interpolated into the jQuery constructor (`$(...)` /
+    `jQuery(...)`) via a template literal or string concatenation, or passed
+    directly to `.html(...)`. jQuery's constructor parses a string argument
+    that looks like markup and builds live DOM nodes from it — a sink most
+    reviewers don't treat as one because it doesn't look like `innerHTML`.
+    Fires when both the source pattern and one of these sinks are present in
+    the same chunk/module.
+severity: high
+type: ast
+tech:
+    - next
+    - vue
+    - react
+    - svelte
+    - angular
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
+
+    - name: find_jquery_html_sink
+      message: jQuery constructor or .html() called with a dynamically constructed value (XSS sink)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          taintFrom: find_url_param_source
+          query: ':matches(CallExpression[callee.name="$"][arguments.0.type="TemplateLiteral"][arguments.0.expressions.0], CallExpression[callee.name="$"][arguments.0.type="BinaryExpression"][arguments.0.operator="+"], CallExpression[callee.name="jQuery"][arguments.0.type="TemplateLiteral"][arguments.0.expressions.0], CallExpression[callee.name="jQuery"][arguments.0.type="BinaryExpression"][arguments.0.operator="+"], CallExpression[callee.type="MemberExpression"][callee.property.name="html"][arguments.0]:not([arguments.0.type="StringLiteral"]))'
