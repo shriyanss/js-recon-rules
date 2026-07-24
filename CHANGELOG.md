@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.4.3 - 2026-07-24
+
+### Added
+
+- Added `detect_react_createelement_dynamic_type` — flags `React.createElement(type, ...)` (or bare `createElement(...)`) called with a URL-derived, non-literal `type` argument.
+- Added `detect_jquery_html_injection_url_param` — flags a URL-derived value passed to the jQuery constructor (`$()`/`jQuery()`) or `.html()`.
+- Added `detect_dompurify_forcekeepattr_hook` — presence-based rule flagging `data.forceKeepAttr = true` inside a DOMPurify sanitize hook (guaranteed bypass on DOMPurify 3.1.3-3.1.5).
+
 ## 1.4.2 - 2026-07-24
 
 ### Added
