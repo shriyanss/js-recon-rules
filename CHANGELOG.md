@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.4.4 - 2026-07-27
+
+### Changed
+
+- Migrated repository references to the `js-recon` GitHub organization.
+- CI: bot-created commits (prettify, merge-after-release) are now signed via `shriyanss/verified-commit-action`, and use `js-recon-bot` as the commit name.
+
 ## 1.4.0 - 2026-07-13
 
 ### Added

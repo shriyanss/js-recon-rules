@@ -25,6 +25,7 @@ jobs:
   prettify:
     runs-on: ubuntu-latest
     needs: version_check
+    environment: commit-signing
     permissions:
       contents: write
     steps:
@@ -32,6 +33,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
+
+      - name: Configure SSH commit signing
+        uses: shriyanss/verified-commit-action@1d7638e44a6bab6d3ac35653af7ef9f343074662 # v1
+        with:
+          ssh-private-key: ${{ secrets.JS_RECON_SIGNING_KEY }}
+          commit-name: "js-recon-bot"
+          commit-email: ${{ secrets.JS_RECON_SIGNING_EMAIL }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -49,8 +57,6 @@ jobs:
 
       - name: Commit changes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           git commit -m "chore: prettify code" || echo "No changes to commit"
           git push
@@ -75,7 +81,7 @@ jobs:
           echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: Install js-recon
-        run: npm install -g @shriyanss/js-recon@$TAG
+        run: npm install -g @js-recon/js-recon@$TAG
 
       - name: Remove .github directory to prevent reading the workflows as rules
         run: rm -rf .github
