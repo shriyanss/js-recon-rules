@@ -1,13 +1,15 @@
 id: detect_dom_xss_innerHTML_url_source
 name: DOM XSS via URL parameter into innerHTML
 author: shriyanss
-js_recon_version: ">=1.3.0"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects a likely DOM-based XSS where a value read from the page URL (via
     URLSearchParams, window.location.search, window.location.hash, document.referrer,
     or document.URL) flows into a dynamic assignment to .innerHTML or .outerHTML.
     Fires only when both the source pattern and a dynamic innerHTML/outerHTML
-    write are present in the same JavaScript chunk/module.
+    write are present in the same JavaScript chunk/module. Skips the write if
+    the assigned value is the direct return of a call to a common
+    sanitizer/encoder function (e.g. DOMPurify.sanitize, sanitizeHtml, escapeHtml).
 severity: high
 type: ast
 tech:
@@ -31,4 +33,4 @@ steps:
       esquery:
           type: esquery
           taintFrom: find_url_param_source
-          query: 'AssignmentExpression[left.type="MemberExpression"]:matches([left.property.name="innerHTML"], [left.property.name="outerHTML"]):not([right.type="StringLiteral"]):not([right.type="NumericLiteral"]):not([right.type="BooleanLiteral"]):not([right.type="NullLiteral"])'
+          query: 'AssignmentExpression[left.type="MemberExpression"]:matches([left.property.name="innerHTML"], [left.property.name="outerHTML"]):not([right.type="StringLiteral"]):not([right.type="NumericLiteral"]):not([right.type="BooleanLiteral"]):not([right.type="NullLiteral"]):not(:matches([right.callee.name=/^(sanitize|sanitizeHtml|sanitizeHTML|purify|escapeHtml|escapeHTML|escape|clean|encode|encodeHTML)$/i], [right.callee.property.name=/^(sanitize|sanitizeHtml|sanitizeHTML|purify|escapeHtml|escapeHTML|escape|clean|encode|encodeHTML)$/i]))'

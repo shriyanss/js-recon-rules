@@ -1,7 +1,7 @@
 id: detect_cookie_manipulation_url_param
 name: DOM-based Cookie Manipulation via URL parameter
 author: shriyanss
-js_recon_version: ">=1.3.0"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects a likely DOM-based cookie manipulation where a value read from the page
     URL flows into `document.cookie =`. Beyond setting an unexpected cookie value,
@@ -9,6 +9,12 @@ description: >-
     in ways the application does not expect; if the cookie value is later read back
     and rendered, this also chains into stored DOM XSS. Fires when both the URL
     source and the `document.cookie` write appear in the same chunk/module.
+    Skips the write if the assigned value is fully wrapped in
+    encodeURIComponent/encodeURI — either directly (`document.cookie =
+    encodeURIComponent(x)`) or as the sole interpolated expression in a
+    template literal (`` document.cookie = `pref=${encodeURIComponent(x)}` ``)
+    — since proper URI-encoding neutralizes the `;`/`=` cookie-attribute
+    injection this rule targets.
 severity: high
 type: ast
 tech:
@@ -30,4 +36,4 @@ steps:
       esquery:
           type: esquery
           taintFrom: find_url_param_source
-          query: 'AssignmentExpression[left.type="MemberExpression"][left.property.name="cookie"][left.object.name="document"]:not([right.type="StringLiteral"]):not([right.type="NullLiteral"])'
+          query: 'AssignmentExpression[left.type="MemberExpression"][left.property.name="cookie"][left.object.name="document"]:not([right.type="StringLiteral"]):not([right.type="NullLiteral"]):not(:matches([right.callee.name=/^(encodeURIComponent|encodeURI)$/i])):not([right.type="TemplateLiteral"][right.expressions.length=1][right.expressions.0.callee.name=/^(encodeURIComponent|encodeURI)$/i])'

@@ -1,0 +1,29 @@
+id: detect_non_global_regex_sanitizer
+name: HTML/script sanitizer using a non-global regex .replace()
+author: shriyanss
+js_recon_version: ">=1.4.1-alpha.4"
+description: >-
+    Detects a `.replace(/pattern/, "")` call whose regex looks like an
+    HTML/script sanitization filter (matches `<script`, an `on*=` event-handler
+    attribute, `javascript:`, or a bare angle bracket) but is missing the
+    global (`g`) flag. Without `/g`, `String.prototype.replace` strips only the
+    first match — a payload with a second occurrence of the filtered pattern
+    survives the "sanitizer" untouched (e.g. `<script></script><script>` with
+    only the first tag stripped still leaves a working `<script>` tag). This is
+    a client-side filter-bypass primitive, not a proof that the value reaches
+    an unescaped sink — pair it with the surrounding render path.
+severity: medium
+type: ast
+tech:
+    - react
+    - next
+    - vue
+    - svelte
+    - angular
+
+steps:
+    - name: find_non_global_sanitizer_replace
+      message: Non-global regex .replace() used as an HTML/script sanitizer
+      esquery:
+          type: esquery
+          query: 'CallExpression[callee.type="MemberExpression"][callee.property.name="replace"][arguments.0.type="RegExpLiteral"][arguments.0.flags=/^(?!.*g).*$/][arguments.0.pattern=/(script|on\w+\s*=|javascript:|<|>)/i][arguments.1.type="StringLiteral"][arguments.1.value=""]'

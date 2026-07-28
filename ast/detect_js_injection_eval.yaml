@@ -1,14 +1,17 @@
 id: detect_js_injection_eval
 name: JavaScript Injection via eval / Function / setTimeout-string sink
 author: shriyanss
-js_recon_version: ">=1.3.0"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects an `eval(...)`, `new Function(...)`, `setTimeout(<string>, ...)`,
     or `setInterval(<string>, ...)` call when a URL-derived value is also read
     in the same chunk/module. These sinks execute their string argument as
     JavaScript in the page origin — full DOM XSS / arbitrary-code-execution
     primitives. Modern apps almost never need them legitimately, so the
-    combination with a URL source is a strong indicator.
+    combination with a URL source is a strong indicator. Excludes
+    setTimeout/setInterval calls whose first argument is a `.bind(...)` call
+    (e.g. `this.render.bind(this, delay)`), since that produces a bound
+    function reference rather than a string to execute.
 severity: high
 type: ast
 tech:
@@ -32,4 +35,4 @@ steps:
       esquery:
           type: esquery
           taintFrom: find_url_param_source
-          query: ':matches(CallExpression[callee.name="eval"], CallExpression[callee.type="MemberExpression"][callee.object.name="window"][callee.property.name="eval"], NewExpression[callee.name="Function"], CallExpression[callee.name="setTimeout"]:not([arguments.0.type="ArrowFunctionExpression"]):not([arguments.0.type="FunctionExpression"]):not([arguments.0.type="Identifier"]), CallExpression[callee.name="setInterval"]:not([arguments.0.type="ArrowFunctionExpression"]):not([arguments.0.type="FunctionExpression"]):not([arguments.0.type="Identifier"]))'
+          query: ':matches(CallExpression[callee.name="eval"], CallExpression[callee.type="MemberExpression"][callee.object.name="window"][callee.property.name="eval"], NewExpression[callee.name="Function"], CallExpression[callee.name="setTimeout"]:not([arguments.0.type="ArrowFunctionExpression"]):not([arguments.0.type="FunctionExpression"]):not([arguments.0.type="Identifier"]):not([arguments.0.callee.property.name="bind"]), CallExpression[callee.name="setInterval"]:not([arguments.0.type="ArrowFunctionExpression"]):not([arguments.0.type="FunctionExpression"]):not([arguments.0.type="Identifier"]):not([arguments.0.callee.property.name="bind"]))'

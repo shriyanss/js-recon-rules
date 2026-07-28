@@ -1,7 +1,7 @@
 id: detect_dom_xss_dangerouslySetInnerHTML
 name: DOM XSS via raw-HTML sink (React dangerouslySetInnerHTML / Vue v-html) with dynamic value
 author: shriyanss
-js_recon_version: ">=1.3.0"
+js_recon_version: ">=1.3.1-alpha.3"
 description: >-
     Detects a likely DOM-XSS sink: a raw-HTML prop assigned a non-literal value.
     Covers React's `dangerouslySetInnerHTML={{ __html: X }}` (compiled as an
@@ -10,7 +10,9 @@ description: >-
     paired with a `["innerHTML"]` patchFlag tuple). This rule pairs the dynamic
     sink with the presence of a `fetch()` call in the same module, indicating
     that the rendered HTML likely originates from a server response (e.g. a
-    comment body, post content, or user-controllable record).
+    comment body, post content, or user-controllable record). Skips the sink if
+    the assigned value is the direct return of a call to a common
+    sanitizer/encoder function (e.g. DOMPurify.sanitize, sanitizeHtml, escapeHtml).
 severity: high
 type: ast
 tech:
@@ -31,4 +33,4 @@ steps:
           - find_fetch_call
       esquery:
           type: esquery
-          query: ':matches(ObjectProperty[key.name="__html"], ObjectProperty[key.name="innerHTML"]):not([value.type="StringLiteral"]):not([value.type="TemplateLiteral"]):not([value.type="NullLiteral"]):not([value.type="NumericLiteral"]):not([value.type="BooleanLiteral"])'
+          query: ':matches(ObjectProperty[key.name="__html"], ObjectProperty[key.name="innerHTML"]):not([value.type="StringLiteral"]):not([value.type="TemplateLiteral"]):not([value.type="NullLiteral"]):not([value.type="NumericLiteral"]):not([value.type="BooleanLiteral"]):not(:matches([value.callee.name=/^(sanitize|sanitizeHtml|sanitizeHTML|purify|escapeHtml|escapeHTML|escape|clean|encode|encodeHTML)$/i], [value.callee.property.name=/^(sanitize|sanitizeHtml|sanitizeHTML|purify|escapeHtml|escapeHTML|escape|clean|encode|encodeHTML)$/i]))'

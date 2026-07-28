@@ -1,7 +1,7 @@
 id: detect_open_redirect_url_param
 name: DOM-based Open Redirect via URL parameter
 author: shriyanss
-js_recon_version: ">=1.3.0"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects a likely DOM-based open redirect where a value read from the page URL
     (URLSearchParams, location.search/hash, document.referrer/URL, useSearchParams)
@@ -9,6 +9,10 @@ description: >-
     `location.replace(X)`, or `window.open(X)`. Without an origin/path allowlist,
     an attacker can redirect the victim to an arbitrary URL (phishing, token theft,
     OAuth callback abuse). Fires when both patterns appear in the same chunk/module.
+    Skips the sink if the navigated-to value is the direct return of a call
+    whose name suggests redirect validation (contains "sanitize", "safe",
+    "valid", or "allow", e.g. isSafeRedirectUrl, sanitizeRedirectUrl) or is
+    wrapped in encodeURIComponent/encodeURI.
 severity: high
 type: ast
 tech:
@@ -30,4 +34,4 @@ steps:
       esquery:
           type: esquery
           taintFrom: find_url_param_source
-          query: ':matches(AssignmentExpression[left.type="MemberExpression"][left.property.name="href"][left.object.type="MemberExpression"][left.object.property.name="location"], AssignmentExpression[left.type="MemberExpression"][left.property.name="href"][left.object.type="Identifier"][left.object.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="assign"][callee.object.type="MemberExpression"][callee.object.property.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="replace"][callee.object.type="MemberExpression"][callee.object.property.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="assign"][callee.object.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="replace"][callee.object.name="location"], CallExpression[callee.type="MemberExpression"][callee.property.name="open"][callee.object.name="window"])'
+          query: ':matches(AssignmentExpression[left.type="MemberExpression"][left.property.name="href"][left.object.type="MemberExpression"][left.object.property.name="location"]:not(:matches([right.callee.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i], [right.callee.property.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i])), AssignmentExpression[left.type="MemberExpression"][left.property.name="href"][left.object.type="Identifier"][left.object.name="location"]:not(:matches([right.callee.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i], [right.callee.property.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i])), CallExpression[callee.type="MemberExpression"][callee.property.name="assign"][callee.object.type="MemberExpression"][callee.object.property.name="location"]:not(:matches([arguments.0.callee.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i], [arguments.0.callee.property.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i])), CallExpression[callee.type="MemberExpression"][callee.property.name="replace"][callee.object.type="MemberExpression"][callee.object.property.name="location"]:not(:matches([arguments.0.callee.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i], [arguments.0.callee.property.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i])), CallExpression[callee.type="MemberExpression"][callee.property.name="assign"][callee.object.name="location"]:not(:matches([arguments.0.callee.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i], [arguments.0.callee.property.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i])), CallExpression[callee.type="MemberExpression"][callee.property.name="replace"][callee.object.name="location"]:not(:matches([arguments.0.callee.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i], [arguments.0.callee.property.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i])), CallExpression[callee.type="MemberExpression"][callee.property.name="open"][callee.object.name="window"]:not(:matches([arguments.0.callee.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i], [arguments.0.callee.property.name=/(sanitize|safe|valid|allow|encodeURIComponent|encodeURI)/i])))'

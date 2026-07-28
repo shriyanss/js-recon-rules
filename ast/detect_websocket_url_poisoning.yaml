@@ -1,7 +1,7 @@
 id: detect_websocket_url_poisoning
 name: WebSocket URL Poisoning via URL parameter
 author: shriyanss
-js_recon_version: ">=1.3.0"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects a likely WebSocket URL poisoning where the URL passed to
     `new WebSocket(...)` originates from a value read from the page URL
@@ -9,7 +9,9 @@ description: >-
     who controls the WebSocket endpoint can push arbitrary messages to the
     victim page — leading to data injection, UI tampering, or chained XSS if
     the messages flow into a DOM sink. Fires when both patterns appear in
-    the same chunk/module.
+    the same chunk/module. Skips the sink if the WebSocket URL is the direct
+    return of a call whose name signals validation intent (contains
+    "sanitize", "safe", "valid", or "allow", e.g. buildSafeWsUrl).
 severity: high
 type: ast
 tech:
@@ -31,4 +33,4 @@ steps:
       esquery:
           type: esquery
           taintFrom: find_url_param_source
-          query: 'NewExpression[callee.name="WebSocket"]'
+          query: 'NewExpression[callee.name="WebSocket"]:not(:matches([arguments.0.callee.name=/(sanitize|safe|valid|allow)/i], [arguments.0.callee.property.name=/(sanitize|safe|valid|allow)/i]))'

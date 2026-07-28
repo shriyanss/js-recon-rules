@@ -1,0 +1,30 @@
+id: detect_prototype_pollution_merge_gadget
+name: Object.assign(target, JSON.parse(...)) prototype-pollution gadget
+author: shriyanss
+js_recon_version: ">=1.4.1-alpha.4"
+description: >-
+    Detects an `Object.assign(target, JSON.parse(input))` call — merging a
+    freshly-parsed JSON value directly into another object with no
+    `__proto__`/`constructor`/`prototype` key filtering. If `input` is
+    attacker-controlled (a postMessage payload, a URL parameter, a response
+    body), an attacker can supply `{"__proto__":{"x":1}}` to pollute
+    `Object.prototype` itself, silently changing the behavior of every object
+    in the page — a common gadget for auth-check bypass or config override
+    once a nested property the app trusts is overwritten. Presence-based:
+    fires on the merge shape itself, since the guard (or its absence) that
+    would make this safe is not always visible in the same expression.
+severity: medium
+type: ast
+tech:
+    - react
+    - next
+    - vue
+    - svelte
+    - angular
+
+steps:
+    - name: find_merge_gadget
+      message: Object.assign() merges a JSON.parse() result with no visible __proto__ filtering
+      esquery:
+          type: esquery
+          query: 'CallExpression[callee.type="MemberExpression"][callee.object.name="Object"][callee.property.name="assign"]:has(CallExpression[callee.type="MemberExpression"][callee.object.name="JSON"][callee.property.name="parse"])'
