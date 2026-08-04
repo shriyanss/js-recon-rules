@@ -5,11 +5,14 @@ on:
     branches-ignore:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   version_check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Check version number
         run: |
           echo "[i] Checking if the version in the CHANGELOG.md and version.txt matches"
@@ -30,7 +33,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ github.head_ref }}
 
@@ -42,7 +45,7 @@ jobs:
           commit-email: ${{ secrets.JS_RECON_SIGNING_EMAIL }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3.9.1
         with:
           node-version: '22'
 
@@ -66,20 +69,20 @@ jobs:
     needs: prettify
     steps:
       - name: Checkout rules
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           path: js-recon-rules
 
       - name: Checkout js-recon (branch matching this rules branch)
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           repository: js-recon/js-recon
           ref: ${{ github.head_ref || github.ref_name }}
           path: js-recon
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@3235b876344d2a9aa001b8d1453c930bba69e610 # v3.9.1
         with:
           node-version: '22'
 
