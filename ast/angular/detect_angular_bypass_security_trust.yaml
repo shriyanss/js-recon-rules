@@ -1,7 +1,7 @@
 id: detect_angular_bypass_security_trust
 name: Angular DomSanitizer bypass (bypassSecurityTrust*)
 author: shriyanss
-js_recon_version: ">=1.4.1"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects calls to Angular's DomSanitizer bypass methods:
     bypassSecurityTrustHtml, bypassSecurityTrustScript, bypassSecurityTrustStyle,
@@ -9,7 +9,10 @@ description: >-
     disable Angular's built-in XSS sanitization and allow arbitrary HTML, script,
     URL, or resource URL values to be rendered without escaping. Any user-controlled
     input that reaches a bypassSecurityTrust* call is a direct XSS or injection
-    vulnerability. Fires on any call to these methods in the analyzed chunks.
+    vulnerability. Fires on calls to these methods where the argument is not a
+    static string (a plain string literal or a template literal with no
+    interpolated expressions), since a fully-static argument (e.g. a hardcoded
+    embed URL) cannot carry attacker-controlled data.
 severity: high
 type: ast
 tech:
@@ -22,4 +25,4 @@ steps:
           If user-controlled input reaches this call, XSS or injection is possible.
       esquery:
           type: esquery
-          query: 'CallExpression[callee.type="MemberExpression"]:matches([callee.property.name="bypassSecurityTrustHtml"],[callee.property.name="bypassSecurityTrustScript"],[callee.property.name="bypassSecurityTrustStyle"],[callee.property.name="bypassSecurityTrustUrl"],[callee.property.name="bypassSecurityTrustResourceUrl"])'
+          query: 'CallExpression[callee.type="MemberExpression"]:matches([callee.property.name="bypassSecurityTrustHtml"],[callee.property.name="bypassSecurityTrustScript"],[callee.property.name="bypassSecurityTrustStyle"],[callee.property.name="bypassSecurityTrustUrl"],[callee.property.name="bypassSecurityTrustResourceUrl"]):not([arguments.0.type="StringLiteral"]):not([arguments.0.expressions.length=0])'

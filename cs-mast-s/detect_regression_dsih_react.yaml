@@ -1,7 +1,7 @@
 id: detect_regression_dsih_react
 name: XSS Regression - dangerouslySetInnerHTML (React Vite, Post component)
 author: shriyanss
-js_recon_version: ">=1.4.1"
+js_recon_version: ">=1.4.1-alpha.5"
 description: >-
     Detects a previously confirmed dangerouslySetInnerHTML XSS sink via its
     CS-MAST-S signature (scat=name,id). This rule is app-specific: the

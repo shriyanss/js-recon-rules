@@ -1,0 +1,35 @@
+id: detect_react_createelement_dynamic_type
+name: React.createElement XSS gadget via URL parameter as dynamic component type
+author: shriyanss
+js_recon_version: ">=1.3.1-alpha.4"
+description: >-
+    Detects a likely XSS gadget where a value read from the page URL
+    (URLSearchParams, window.location.search/hash, document.referrer,
+    document.URL) is passed as the *type* argument of `React.createElement(type,
+    props, ...children)` or a bare `createElement(type, ...)` call, instead of a
+    string/component literal. When the type argument is attacker-controlled,
+    React renders whatever tag name the value resolves to, which can turn an
+    otherwise-inert value into markup/attribute injection depending on which of
+    type/props/children are also controlled. Fires when both the source pattern
+    and the dynamic-type sink are present in the same chunk/module.
+severity: medium
+type: ast
+tech:
+    - next
+    - react
+
+steps:
+    - name: find_url_param_source
+      message: URL-derived value read (URLSearchParams.get / location.search|hash / document.referrer|URL / useSearchParams)
+      esquery:
+          type: esquery
+          query: ':matches(CallExpression[callee.type="MemberExpression"][callee.property.name="get"][callee.object.type="NewExpression"][callee.object.callee.name="URLSearchParams"], MemberExpression[property.name="search"][object.property.name="location"], MemberExpression[property.name="search"][object.name="location"], MemberExpression[property.name="hash"][object.property.name="location"], MemberExpression[property.name="hash"][object.name="location"], MemberExpression[property.name="referrer"][object.name="document"], MemberExpression[property.name="URL"][object.name="document"], CallExpression[callee.type="MemberExpression"][callee.property.name="useSearchParams"], CallExpression[callee.name="useSearchParams"])'
+
+    - name: find_createElement_dynamic_type_sink
+      message: React.createElement() (or createElement()) called with a non-literal first argument (dynamic component/tag type)
+      requires:
+          - find_url_param_source
+      esquery:
+          type: esquery
+          taintFrom: find_url_param_source
+          query: ':matches(CallExpression[callee.name="createElement"][arguments.0]:not([arguments.0.type="StringLiteral"]), CallExpression[callee.type="MemberExpression"][callee.property.name="createElement"][arguments.0]:not([arguments.0.type="StringLiteral"]), CallExpression[callee.type="SequenceExpression"][callee.expressions.1.property.name="createElement"][arguments.0]:not([arguments.0.type="StringLiteral"]))'

@@ -1,8 +1,8 @@
-id: detect_postMessage_function_href
-name: Detect .href in the event handler for postMessage event handler
+id: detect_postMessage_innerHtml_sink
+name: postMessage event listeners with innerHTML
 author: shriyanss
-js_recon_version: ">=1.3.0"
-description: Detect .href in the event handler for postMessage event handler
+js_recon_version: ">=1.4.1-alpha.4"
+description: Detect postMessage event listeners with innerHTML sink
 severity: medium
 type: ast
 tech:
@@ -23,11 +23,11 @@ steps:
           - check_postMessage
       postMessageFuncResolve:
           name: check_postMessage
-    - name: check_href
-      message: detects if there .href is there in the code
+    - name: check_innerHtml
+      message: Check if innerHTML is being assigned something
       requires:
           - resolve_event_handler_function
       checkAssignmentExist:
           name: resolve_event_handler_function
-          type: href
+          type: innerHTML
           memberExpression: true

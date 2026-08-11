@@ -1,11 +1,60 @@
 # CHANGELOG
 
+## 1.5.0 - 2026-08-11
+
+### Added
+
+- Added `detect_client_side_authz_gate` — flags an `if` statement whose condition reads a role/entitlement flag (e.g. `isAdmin`, `isPaid`, `subscriptionType`) directly off an object and uses it to decide whether to render UI or call an endpoint.
+- Added `detect_insecure_random_token_storage` rule.
+- Added `detect_cloud_credentials_in_bundle` rule.
+- Added `detect_hardcoded_hmac_signing_key` rule.
+- Added `detect_non_global_regex_sanitizer` rule.
+- Added `detect_prototype_pollution_merge_gadget` rule.
+
+### Changed
+
+- Reorganized AST detectors into vulnerability-category subdirectories (e.g. `ast/xss/`, `ast/postmessage/`, `ast/secrets/`) instead of a flat `ast/` directory.
+- CI: added Plumber CI/CD security scanning (also runs on `main`, with `workflow_dispatch` for on-demand re-runs); added a Plumber Score badge to `README.md`.
+- CI: pinned `verified-commit-action` to a commit SHA instead of a mutable `@v1` tag.
+
+### Fixed
+
+- Reduced false positives across 17 detectors by excluding validator/sanitizer-wrapped values from firing: `detect_websocket_url_poisoning`, `detect_storage_manipulation_url_param`, `detect_redos_url_param`, `detect_postmessage_eval` (now requires `window` as the `addEventListener` target), `detect_open_redirect_url_param`, `detect_link_manipulation_href`, `detect_js_injection_eval` (excludes `.bind()` function references), `detect_hardcoded_secrets` (excludes masked/placeholder credentials), `detect_dom_setattribute_url_param`, `detect_cspt_fetch_url_param` (implements the documented `encodeURIComponent`/`encodeURI` exclusion), `detect_cookie_manipulation_url_param`, `detect_ajax_header_manipulation`, `detect_angular_bypass_security_trust` (excludes static-string bypass calls), `detect_json_injection_to_dangerouslysetinnerhtml`, `detect_dom_xss_dangerouslySetInnerHTML`, `detect_dom_xss_innerHTML_url_source`.
+- `missing_authorization_header`: skip endpoints that use an alternate auth header.
+
 ## 1.4.4 - 2026-07-27
 
 ### Changed
 
 - Migrated repository references to the `js-recon` GitHub organization.
 - CI: bot-created commits (prettify, merge-after-release) are now signed via `shriyanss/verified-commit-action`, and use `js-recon-bot` as the commit name.
+
+## 1.4.3 - 2026-07-24
+
+### Added
+
+- Added `detect_react_createelement_dynamic_type` — flags `React.createElement(type, ...)` (or bare `createElement(...)`) called with a URL-derived, non-literal `type` argument.
+- Added `detect_jquery_html_injection_url_param` — flags a URL-derived value passed to the jQuery constructor (`$()`/`jQuery()`) or `.html()`.
+- Added `detect_dompurify_forcekeepattr_hook` — presence-based rule flagging `data.forceKeepAttr = true` inside a DOMPurify sanitize hook (guaranteed bypass on DOMPurify 3.1.3-3.1.5).
+
+## 1.4.2 - 2026-07-24
+
+### Added
+
+- Added `detect_cspt_xhr_url_param` — Client-Side Path Traversal via `XMLHttpRequest.open()`/axios, same taint pattern as `detect_cspt_fetch_url_param` but for the XHR/axios sink.
+- Added `detect_postmessage_weak_origin_check` — flags a `postMessage` handler whose origin validation relies on a bypassable string-comparison idiom (`.endsWith()`, `.includes()`, `.indexOf()`, `.startsWith()`) instead of exact equality.
+- Added `detect_css_injection_style_sink` — flags a URL-derived value written into `element.style.cssText`, `setAttribute("style", ...)`, or a CSS-in-JS tagged template.
+
+## 1.4.1 - 2026-07-24
+
+### Added
+
+- Rules now support an optional `js_recon_max_version` field for a rule that relies on a feature since retired by js-recon.
+- `.github/workflows/push_checks.yml`'s `validate` job now builds js-recon from source, checked out at the `js-recon/js-recon` branch matching this branch's name, instead of installing the last tagged npm release — required so an in-development rule can be validated against an in-development, not-yet-released js-recon feature. It also now runs `--determine-compatible-version` in addition to `--validate`, so a rule with an incorrect `js_recon_version`/`js_recon_max_version` now fails CI.
+
+### Fixed
+
+- Corrected `js_recon_version` on every existing rule via `js-recon analyze --apply-compatible-versions`, which computes the version a rule actually requires from the features it uses rather than a hand-picked guess.
 
 ## 1.4.0 - 2026-07-13
 

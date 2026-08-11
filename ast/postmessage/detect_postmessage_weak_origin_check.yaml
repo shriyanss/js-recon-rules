@@ -1,0 +1,44 @@
+id: detect_postmessage_weak_origin_check
+name: postMessage handler using a bypassable origin-check idiom
+author: shriyanss
+js_recon_version: ">=1.4.1-alpha.4"
+description: >-
+    Detects a `message` event listener whose origin validation relies on
+    `event.origin` (or a destructured `origin`) compared with `.endsWith()`,
+    `.includes()`, `.indexOf()`, or `.startsWith()` instead of an exact-string
+    equality check. These idioms are mechanically bypassable: an attacker-hosted
+    page at a path/subdomain that merely contains the allowed suffix (e.g.
+    `https://attacker.com/allowed.example.com` or `evil-allowed.example.com`)
+    satisfies the check while sending from an untrusted origin. Fires regardless
+    of which sink the handler reaches, since the validation itself is the flaw.
+severity: medium
+type: ast
+tech:
+    - next
+    - vue
+    - react
+    - svelte
+    - angular
+
+steps:
+    - name: check_postMessage
+      message: postMessage event listener detected
+      esquery:
+          type: esquery
+          query: CallExpression[callee.object.name="window"][callee.property.name="addEventListener"][arguments.0.value="message"][arguments.1]
+
+    - name: resolve_event_handler_function
+      message: Code for postMessage event handler
+      requires:
+          - check_postMessage
+      postMessageFuncResolve:
+          name: check_postMessage
+
+    - name: check_weak_origin_check
+      message: Origin check uses a bypassable string-comparison idiom (endsWith/includes/indexOf/startsWith) instead of exact equality
+      requires:
+          - resolve_event_handler_function
+      esquery:
+          type: esquery
+          inScopeOf: resolve_event_handler_function
+          query: ':matches(CallExpression[callee.property.name=/^(endsWith|includes|indexOf|startsWith)$/][callee.object.property.name="origin"], CallExpression[callee.property.name=/^(endsWith|includes|indexOf|startsWith)$/][callee.object.name="origin"])'

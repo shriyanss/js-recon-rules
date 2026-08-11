@@ -1,8 +1,12 @@
 id: missing_authorization_header
 name: Missing Authorization Header
 author: shriyanss
-js_recon_version: ">=1.3.0"
-description: Check if the "Authorization" header is present in the request
+js_recon_version: ">=1.3.1-alpha.3"
+description: >-
+    Check if the "Authorization" header is present in the request. Skips
+    endpoints that declare an alternate auth mechanism header
+    (X-Api-Key, X-Auth-Token, or Cookie), so API-key- and cookie-session-based
+    endpoints aren't flagged as unauthenticated.
 tech:
     - all
 severity: medium
@@ -15,3 +19,21 @@ steps:
           type: headers
           condition: absent
           name: Authorization
+    - name: check_api_key_header
+      message: X-Api-Key header is not present
+      request:
+          type: headers
+          condition: absent
+          name: X-Api-Key
+    - name: check_auth_token_header
+      message: X-Auth-Token header is not present
+      request:
+          type: headers
+          condition: absent
+          name: X-Auth-Token
+    - name: check_cookie_header
+      message: Cookie header is not present
+      request:
+          type: headers
+          condition: absent
+          name: Cookie

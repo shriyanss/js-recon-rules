@@ -1,7 +1,7 @@
 id: detect_regression_intersection_observer_innerhtml
 name: "XSS Regression - IntersectionObserver callback → innerHTML (React Vite, IntersectionSink component)"
 author: shriyanss
-js_recon_version: ">=1.4.1"
+js_recon_version: ">=1.4.1-alpha.5"
 severity: high
 type: cs-mast-s
 tech:

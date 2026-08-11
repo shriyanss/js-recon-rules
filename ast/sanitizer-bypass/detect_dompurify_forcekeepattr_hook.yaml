@@ -1,0 +1,28 @@
+id: detect_dompurify_forcekeepattr_hook
+name: DOMPurify sanitizer bypass via forceKeepAttr hook
+author: shriyanss
+js_recon_version: ">=1.4.1-alpha.4"
+description: >-
+    Detects an assignment to `.forceKeepAttr` inside a DOMPurify
+    `uponSanitizeAttribute`/`uponSanitizeElement` hook callback. Setting this
+    flag tells DOMPurify to skip its own attribute safety check for that
+    attribute entirely — on vulnerable DOMPurify versions this is a guaranteed
+    sanitizer bypass, and on any version it disables a safety check the app
+    likely didn't intend to disable for arbitrary attributes. Presence-based:
+    fires whenever the assignment pattern is found, regardless of the
+    surrounding condition.
+severity: high
+type: ast
+tech:
+    - next
+    - vue
+    - react
+    - svelte
+    - angular
+
+steps:
+    - name: find_forcekeepattr_assignment
+      message: Assignment to .forceKeepAttr inside a DOMPurify sanitize hook (sanitizer bypass)
+      esquery:
+          type: esquery
+          query: 'AssignmentExpression[left.type="MemberExpression"][left.property.name="forceKeepAttr"]'
