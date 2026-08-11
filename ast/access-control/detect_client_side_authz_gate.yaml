@@ -1,7 +1,7 @@
 id: detect_client_side_authz_gate
 name: Client-side authorization gate on role/entitlement flag
 author: shriyanss
-js_recon_version: ">=1.4.1-alpha.4"
+js_recon_version: ">=2.0.1-alpha.1"
 description: >-
     Detects an `if` statement whose condition reads a role or entitlement flag
     (e.g. isAdmin, isPaid, isPremium, subscriptionType, userRole,

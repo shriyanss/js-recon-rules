@@ -1,7 +1,7 @@
 id: detect_insecure_random_token_storage
 name: Insecure PRNG (Math.random) feeding a session/token storage sink
 author: shriyanss
-js_recon_version: ">=1.4.1-alpha.4"
+js_recon_version: ">=2.0.1-alpha.1"
 description: >-
     Detects a value derived from `Math.random()` being written to
     `document.cookie` or `localStorage`/`sessionStorage.setItem(...)`.

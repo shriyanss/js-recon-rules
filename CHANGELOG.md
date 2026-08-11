@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 1.5.0 - 2026-08-11
+
+### Added
+
+- Added `detect_client_side_authz_gate` — flags an `if` statement whose condition reads a role/entitlement flag (e.g. `isAdmin`, `isPaid`, `subscriptionType`) directly off an object and uses it to decide whether to render UI or call an endpoint.
+- Added `detect_insecure_random_token_storage` rule.
+- Added `detect_cloud_credentials_in_bundle` rule.
+- Added `detect_hardcoded_hmac_signing_key` rule.
+- Added `detect_non_global_regex_sanitizer` rule.
+- Added `detect_prototype_pollution_merge_gadget` rule.
+
+### Changed
+
+- Reorganized AST detectors into vulnerability-category subdirectories (e.g. `ast/xss/`, `ast/postmessage/`, `ast/secrets/`) instead of a flat `ast/` directory.
+- CI: added Plumber CI/CD security scanning (also runs on `main`, with `workflow_dispatch` for on-demand re-runs); added a Plumber Score badge to `README.md`.
+- CI: pinned `verified-commit-action` to a commit SHA instead of a mutable `@v1` tag.
+
+### Fixed
+
+- Reduced false positives across 17 detectors by excluding validator/sanitizer-wrapped values from firing: `detect_websocket_url_poisoning`, `detect_storage_manipulation_url_param`, `detect_redos_url_param`, `detect_postmessage_eval` (now requires `window` as the `addEventListener` target), `detect_open_redirect_url_param`, `detect_link_manipulation_href`, `detect_js_injection_eval` (excludes `.bind()` function references), `detect_hardcoded_secrets` (excludes masked/placeholder credentials), `detect_dom_setattribute_url_param`, `detect_cspt_fetch_url_param` (implements the documented `encodeURIComponent`/`encodeURI` exclusion), `detect_cookie_manipulation_url_param`, `detect_ajax_header_manipulation`, `detect_angular_bypass_security_trust` (excludes static-string bypass calls), `detect_json_injection_to_dangerouslysetinnerhtml`, `detect_dom_xss_dangerouslySetInnerHTML`, `detect_dom_xss_innerHTML_url_source`.
+- `missing_authorization_header`: skip endpoints that use an alternate auth header.
+
 ## 1.4.4 - 2026-07-27
 
 ### Changed

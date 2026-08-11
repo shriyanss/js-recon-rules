@@ -1,7 +1,7 @@
 id: detect_postmessage_weak_origin_check
 name: postMessage handler using a bypassable origin-check idiom
 author: shriyanss
-js_recon_version: ">=1.4.1-alpha.4"
+js_recon_version: ">=2.0.1-alpha.1"
 description: >-
     Detects a `message` event listener whose origin validation relies on
     `event.origin` (or a destructured `origin`) compared with `.endsWith()`,
