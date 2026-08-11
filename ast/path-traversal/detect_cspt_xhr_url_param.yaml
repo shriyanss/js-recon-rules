@@ -1,7 +1,7 @@
 id: detect_cspt_xhr_url_param
 name: Client-Side Path Traversal (CSPT) — URL parameter in XHR/axios URL
 author: shriyanss
-js_recon_version: ">=2.0.1-alpha.1"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects a likely Client-Side Path Traversal where a value read from the page URL
     (URLSearchParams, window.location.search/hash, document.referrer, document.URL)

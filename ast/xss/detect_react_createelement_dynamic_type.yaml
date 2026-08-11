@@ -1,7 +1,7 @@
 id: detect_react_createelement_dynamic_type
 name: React.createElement XSS gadget via URL parameter as dynamic component type
 author: shriyanss
-js_recon_version: ">=2.0.1-alpha.1"
+js_recon_version: ">=1.3.1-alpha.4"
 description: >-
     Detects a likely XSS gadget where a value read from the page URL
     (URLSearchParams, window.location.search/hash, document.referrer,

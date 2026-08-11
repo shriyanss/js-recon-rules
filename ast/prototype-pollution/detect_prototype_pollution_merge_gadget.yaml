@@ -1,7 +1,7 @@
 id: detect_prototype_pollution_merge_gadget
 name: Object.assign(target, JSON.parse(...)) prototype-pollution gadget
 author: shriyanss
-js_recon_version: ">=2.0.1-alpha.1"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects an `Object.assign(target, JSON.parse(input))` call — merging a
     freshly-parsed JSON value directly into another object with no

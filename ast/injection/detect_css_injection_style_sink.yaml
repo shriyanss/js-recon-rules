@@ -1,7 +1,7 @@
 id: detect_css_injection_style_sink
 name: CSS Injection via URL parameter into a style sink
 author: shriyanss
-js_recon_version: ">=2.0.1-alpha.1"
+js_recon_version: ">=1.4.1-alpha.4"
 description: >-
     Detects a likely CSS-injection sink where a value read from the page URL
     (URLSearchParams, window.location.search/hash, document.referrer,
