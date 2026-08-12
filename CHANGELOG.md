@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+
+- CI: enabled Dependabot version updates (`.github/dependabot.yml`) for the GitHub Actions ecosystem, opening weekly PRs against `dev`. Minor/patch bumps are grouped into a single PR; majors open individually for dedicated review.
+
 ## 1.5.0 - 2026-08-11
 
 ### Added
