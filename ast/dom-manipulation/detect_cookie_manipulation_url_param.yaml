@@ -15,6 +15,12 @@ description: >-
     template literal (`` document.cookie = `pref=${encodeURIComponent(x)}` ``)
     — since proper URI-encoding neutralizes the `;`/`=` cookie-attribute
     injection this rule targets.
+remediation: >-
+    Don't write raw URL-derived data into document.cookie. If a cookie must
+    reflect a URL parameter, validate it against an allowlist and always encode
+    the value with encodeURIComponent before assignment; set cookie attributes
+    (Path, Domain, SameSite, Secure) explicitly in code rather than letting
+    attacker input control them via injected `;` separators.
 severity: high
 type: ast
 tech:

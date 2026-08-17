@@ -12,6 +12,11 @@ description: >-
     the same chunk/module. Skips the sink if the WebSocket URL is the direct
     return of a call whose name signals validation intent (contains
     "sanitize", "safe", "valid", or "allow", e.g. buildSafeWsUrl).
+remediation: >-
+    Don't let a URL parameter determine the WebSocket endpoint. Hardcode the
+    WebSocket host/path in code or resolve it from a trusted, server-controlled
+    configuration value; if a dynamic room/channel name is required, validate
+    it against a strict allowlist before building the URL.
 severity: high
 type: ast
 tech:

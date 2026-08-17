@@ -14,6 +14,12 @@ description: >-
     itself as a candidate for manual verification that the server enforces the
     same boundary on the actual request — it is not proof of a missing
     server-side check.
+remediation: >-
+    Enforce the same authorization decision server-side on every request the
+    gated action triggers; treat the client-side flag purely as a UI hint,
+    never as the sole gate. Verify the backend independently checks the user's
+    role/entitlement on the endpoint itself, not just a client-supplied flag or
+    session field.
 severity: info
 type: ast
 tech:

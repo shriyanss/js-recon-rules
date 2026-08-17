@@ -10,6 +10,12 @@ description: >-
     `..` segments before the request is sent, so an attacker can redirect the fetch
     to a different API path. Fires when both the source pattern and a fetch() sink
     are present in the same chunk/module.
+remediation: >-
+    URL-encode any URL-derived value with encodeURIComponent before
+    interpolating it into a fetch() URL path segment, so `../` and other path-
+    traversal characters can't redirect the request to a different endpoint.
+    Prefer passing user input as a query parameter rather than a path segment
+    where possible.
 severity: high
 type: ast
 tech:

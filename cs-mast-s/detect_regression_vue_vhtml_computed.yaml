@@ -2,6 +2,10 @@ id: detect_regression_vue_vhtml_computed
 name: "XSS Regression - Vue v-html bound to computed chain (Vite, RichEditor component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Sanitize the value (or fix the upstream computed-property transformation)
+    before it's bound via v-html — a multi-step computed chain doesn't
+    neutralize unescaped HTML at the end of it.
 severity: high
 type: cs-mast-s
 tech:

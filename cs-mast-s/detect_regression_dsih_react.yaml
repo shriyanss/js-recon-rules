@@ -21,6 +21,9 @@ description: >-
       eval, bypassSecurityTrustHtml) that survive minification identically.
     - For complex components using generic single-letter variable names, use
       scat=id which is structurally portable across bundlers (but has higher FP rate).
+remediation: >-
+    Sanitize the content with DOMPurify before passing it to
+    dangerouslySetInnerHTML's `__html` value.
 severity: high
 type: cs-mast-s
 tech:

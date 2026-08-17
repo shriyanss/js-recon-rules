@@ -12,6 +12,12 @@ description: >-
     the write if the stored value is the direct return of a call whose name
     signals validation intent (contains "sanitize", "safe", "valid", "allow",
     or "escape", e.g. validateTheme, sanitizeStorageValue).
+remediation: >-
+    Treat localStorage/sessionStorage as an untrusted-input sink when values
+    originate from the URL. Validate/allowlist the value before persisting it,
+    and never render a previously stored value back into the DOM without
+    escaping — persistence makes an unvalidated write far more dangerous than a
+    one-off reflected sink.
 severity: high
 type: ast
 tech:

@@ -11,6 +11,11 @@ description: >-
     return of a call to a regex-escaping helper (e.g. lodash's escapeRegExp),
     since escaping metacharacters removes the backtracking-quantifier
     primitives ReDoS depends on.
+remediation: >-
+    Never build a RegExp pattern directly from URL-derived input. If dynamic
+    matching against user input is required, escape all regex metacharacters
+    first (e.g. lodash's escapeRegExp) so the value can only match literally,
+    not act as a pattern.
 severity: medium
 type: ast
 tech:

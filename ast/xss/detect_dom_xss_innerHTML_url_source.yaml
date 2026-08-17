@@ -10,6 +10,10 @@ description: >-
     write are present in the same JavaScript chunk/module. Skips the write if
     the assigned value is the direct return of a call to a common
     sanitizer/encoder function (e.g. DOMPurify.sanitize, sanitizeHtml, escapeHtml).
+remediation: >-
+    Don't write URL-derived data into innerHTML/outerHTML. Use `textContent`
+    for plain text, or sanitize with DOMPurify if HTML content is genuinely
+    required; never fall back to home-grown escaping.
 severity: high
 type: ast
 tech:

@@ -12,6 +12,10 @@ description: >-
     reviewers don't treat as one because it doesn't look like `innerHTML`.
     Fires when both the source pattern and one of these sinks are present in
     the same chunk/module.
+remediation: >-
+    Don't interpolate URL-derived values into the jQuery constructor or
+    `.html()`. Use `.text()` for plain content, or sanitize with DOMPurify
+    before calling `.html()` if markup is genuinely required.
 severity: high
 type: ast
 tech:

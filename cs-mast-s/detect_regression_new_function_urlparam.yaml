@@ -2,6 +2,9 @@ id: detect_regression_new_function_urlparam
 name: "JS Injection Regression - new Function() from URL param (React Vite, NewFunction component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Remove the new Function() call built from a URL parameter entirely; there
+    is no safe way to build executable code from user input on the client.
 severity: high
 type: cs-mast-s
 tech:

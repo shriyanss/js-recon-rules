@@ -12,6 +12,11 @@ description: >-
     setTimeout/setInterval calls whose first argument is a `.bind(...)` call
     (e.g. `this.render.bind(this, delay)`), since that produces a bound
     function reference rather than a string to execute.
+remediation: >-
+    Remove eval/new Function/string-based setTimeout/setInterval entirely — use
+    direct function references or JSON.parse for data. There is essentially
+    never a legitimate reason to feed URL-derived text into any of these on the
+    client; refactor to avoid dynamic code execution altogether.
 severity: high
 type: ast
 tech:

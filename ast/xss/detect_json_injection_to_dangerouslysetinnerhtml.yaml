@@ -11,6 +11,11 @@ description: >-
     appear unsanitised in the DOM. Skips the sink if the assigned value is the
     direct return of a call to a common sanitizer/encoder function (e.g.
     DOMPurify.sanitize, sanitizeHtml, escapeHtml).
+remediation: >-
+    Treat any JSON.parse() result derived from URL/user input as untrusted
+    before it reaches dangerouslySetInnerHTML — sanitize the relevant HTML
+    fields with DOMPurify, or render structured fields with React's normal
+    escaping JSX bindings instead of raw HTML.
 severity: high
 type: ast
 tech:

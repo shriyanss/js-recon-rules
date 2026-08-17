@@ -12,6 +12,11 @@ description: >-
     Skips the write if the assigned value is the direct return of a call to
     a common URL/HTML sanitizer (e.g. sanitizeUrl, DOMPurify.sanitize,
     encodeURIComponent).
+remediation: >-
+    Validate any URL-derived value before assigning it to an element's href;
+    reject javascript: and data: schemes and allow only http(s) URLs or
+    relative paths, via an allowlist check or a URL-sanitizing helper applied
+    at the point of assignment.
 severity: high
 type: ast
 tech:

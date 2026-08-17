@@ -12,6 +12,11 @@ description: >-
     otherwise-inert value into markup/attribute injection depending on which of
     type/props/children are also controlled. Fires when both the source pattern
     and the dynamic-type sink are present in the same chunk/module.
+remediation: >-
+    Never pass a URL-derived value as the `type` argument to
+    React.createElement/createElement. Map user input to a component/tag
+    through an explicit allowlist (a lookup object of permitted tag names)
+    instead of using the raw value directly.
 severity: medium
 type: ast
 tech:

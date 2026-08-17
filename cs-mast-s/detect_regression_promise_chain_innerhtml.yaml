@@ -2,6 +2,9 @@ id: detect_regression_promise_chain_innerhtml
 name: "XSS Regression - Promise chain → innerHTML (React Vite, PromiseChainSink component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Sanitize the resolved value with DOMPurify immediately before the innerHTML
+    write, regardless of how many .then() layers deep it occurs.
 severity: high
 type: cs-mast-s
 tech:

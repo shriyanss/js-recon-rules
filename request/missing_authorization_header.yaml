@@ -9,6 +9,10 @@ description: >-
     endpoints aren't flagged as unauthenticated.
 tech:
     - all
+remediation: >-
+    Add authentication to the endpoint: require and validate an Authorization
+    header, API key, auth token, or session cookie server-side, and reject
+    requests that are missing all of them.
 severity: medium
 type: request
 

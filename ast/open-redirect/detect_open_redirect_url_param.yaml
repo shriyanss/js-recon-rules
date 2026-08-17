@@ -13,6 +13,11 @@ description: >-
     whose name suggests redirect validation (contains "sanitize", "safe",
     "valid", or "allow", e.g. isSafeRedirectUrl, sanitizeRedirectUrl) or is
     wrapped in encodeURIComponent/encodeURI.
+remediation: >-
+    Never navigate directly to a URL-derived value. Validate the destination
+    against an allowlist of known internal paths/origins before calling
+    location.href/assign/replace or window.open; reject anything that doesn't
+    match rather than trying to blocklist dangerous schemes.
 severity: high
 type: ast
 tech:

@@ -14,6 +14,12 @@ description: >-
     execution, so this sink is dangerous even under a strict script-blocking CSP.
     Fires when both the source pattern and one of these style sinks are present
     in the same chunk/module.
+remediation: >-
+    Never interpolate a URL-derived value directly into style.cssText, a style
+    attribute, or a CSS-in-JS template. Map user input to a fixed set of known-
+    safe values (e.g. theme names mapped to pre-defined CSS classes) instead of
+    passing raw attacker-controlled text into any CSS sink — CSS injection can
+    exfiltrate data even without script execution.
 severity: medium
 type: ast
 tech:

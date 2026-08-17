@@ -2,6 +2,10 @@ id: detect_regression_vue_watcher_innerhtml
 name: "XSS Regression - Vue watcher callback → innerHTML (Vite, RichEditor component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Don't rely on a partial regex-based filter (e.g. stripping only `<script>`
+    tags); sanitize the value with DOMPurify inside the watcher callback before
+    writing it to innerHTML.
 severity: high
 type: cs-mast-s
 tech:

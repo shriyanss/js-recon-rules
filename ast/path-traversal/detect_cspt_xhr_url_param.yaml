@@ -12,6 +12,11 @@ description: >-
     and axios calls carry the same cookies/auth headers as fetch(), reach the same
     CSPT2CSRF-style impact. Fires when both the source pattern and an XHR/axios
     sink are present in the same chunk/module.
+remediation: >-
+    URL-encode any URL-derived value with encodeURIComponent before
+    interpolating it into an XHR/axios request URL's path segment, and prefer
+    query parameters over path segments for user-controlled values to avoid
+    path traversal reaching a different API route.
 severity: high
 type: ast
 tech:

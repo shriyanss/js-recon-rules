@@ -2,6 +2,10 @@ id: detect_regression_innerhtml_react_search
 name: "XSS Regression - innerHTML assignment (React Vite, Search component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Sanitize search-result content with DOMPurify before the innerHTML
+    assignment, or switch to React's normal text/JSX rendering instead of a
+    direct DOM write.
 severity: high
 type: cs-mast-s
 tech:
