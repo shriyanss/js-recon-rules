@@ -12,6 +12,11 @@ description: >-
     only the first tag stripped still leaves a working `<script>` tag). This is
     a client-side filter-bypass primitive, not a proof that the value reaches
     an unescaped sink — pair it with the surrounding render path.
+remediation: >-
+    Add the global (`g`) flag to any regex used with `.replace()` as a
+    sanitizer so all occurrences of the dangerous pattern are stripped, not
+    just the first; better yet, use a maintained sanitization library
+    (DOMPurify, sanitize-html) instead of hand-rolled regex stripping.
 severity: medium
 type: ast
 tech:

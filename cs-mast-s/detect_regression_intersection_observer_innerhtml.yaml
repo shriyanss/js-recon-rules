@@ -2,6 +2,10 @@ id: detect_regression_intersection_observer_innerhtml
 name: "XSS Regression - IntersectionObserver callback → innerHTML (React Vite, IntersectionSink component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Sanitize the lazy-loaded content with DOMPurify before assigning it to
+    innerHTML inside the IntersectionObserver callback — deferring the write
+    until the element is visible doesn't make the sink any safer.
 severity: high
 type: cs-mast-s
 tech:

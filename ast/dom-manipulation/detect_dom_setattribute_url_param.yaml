@@ -13,6 +13,12 @@ description: >-
     the write if the attribute value is the direct return of a call to a
     common URL/HTML sanitizer (e.g. sanitizeUrl, DOMPurify.sanitize,
     encodeURIComponent).
+remediation: >-
+    Never pass a URL-derived value as the value of setAttribute for
+    src/href/style/srcdoc/action/formaction/background/poster/data. Validate
+    against an allowlist of protocols/paths, or run the value through a
+    dedicated sanitizer (a URL sanitizer that rejects javascript: schemes, or
+    DOMPurify for HTML/style content) before the DOM write.
 severity: high
 type: ast
 tech:

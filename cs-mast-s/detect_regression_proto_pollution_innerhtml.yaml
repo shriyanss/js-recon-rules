@@ -2,6 +2,11 @@ id: detect_regression_proto_pollution_innerhtml
 name: "XSS Regression - Prototype Pollution → innerHTML (React Vite, ProtoPollution component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Fix the prototype-pollution gadget by filtering
+    __proto__/constructor/prototype keys on merge, and separately sanitize the
+    value with DOMPurify before it reaches the innerHTML write — both steps in
+    the chain need remediation.
 severity: high
 type: cs-mast-s
 tech:

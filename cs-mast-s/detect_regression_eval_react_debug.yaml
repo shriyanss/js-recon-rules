@@ -2,6 +2,10 @@ id: detect_regression_eval_react_debug
 name: "JS Injection Regression - eval() (React Vite, DebugConsole component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Remove the eval() call from the debug console entirely; if expression
+    evaluation is genuinely needed for a dev tool, gate it behind a build flag
+    that's stripped from production bundles, and never expose it to end users.
 severity: high
 type: cs-mast-s
 tech:

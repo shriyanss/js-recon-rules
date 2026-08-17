@@ -11,6 +11,11 @@ description: >-
     likely didn't intend to disable for arbitrary attributes. Presence-based:
     fires whenever the assignment pattern is found, regardless of the
     surrounding condition.
+remediation: >-
+    Remove the forceKeepAttr assignment from sanitize hooks unless there is a
+    specific, reviewed reason to bypass DOMPurify's attribute check for that
+    one attribute; if it's needed, scope it as tightly as possible (single
+    attribute, single tag) and keep DOMPurify updated to a patched version.
 severity: high
 type: ast
 tech:

@@ -3,6 +3,10 @@ name: Detect postMessage event listeners
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.4"
 description: Detect postMessage event listeners
+remediation: >-
+    No fix needed for the listener by itself — this rule is informational.
+    Ensure any postMessage listener validates event.origin with an exact-match
+    allowlist and never trusts the message payload/source without validation.
 severity: info
 type: ast
 tech:

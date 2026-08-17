@@ -13,6 +13,11 @@ description: >-
     once a nested property the app trusts is overwritten. Presence-based:
     fires on the merge shape itself, since the guard (or its absence) that
     would make this safe is not always visible in the same expression.
+remediation: >-
+    Filter out __proto__, constructor, and prototype keys before merging parsed
+    JSON into another object (or use a dedicated safe-merge utility that blocks
+    these keys, or `Object.create(null)` as the merge target), or switch to
+    `structuredClone`/a plain deep-copy that doesn't touch the prototype chain.
 severity: medium
 type: ast
 tech:

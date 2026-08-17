@@ -3,6 +3,10 @@ name: Detect .href in the event handler for postMessage event handler
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.4"
 description: Detect .href in the event handler for postMessage event handler
+remediation: >-
+    Validate event.origin against an exact-match allowlist before the handler
+    runs, and never assign postMessage-derived data directly to `.href` —
+    validate it against an allowlist of expected values/paths first.
 severity: medium
 type: ast
 tech:

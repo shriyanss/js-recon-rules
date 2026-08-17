@@ -2,6 +2,10 @@ id: detect_regression_angular_safe_html_pipe
 name: "XSS Regression - Angular bypassSecurityTrustHtml in SafeHtmlPipe (esbuild)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.4"
+remediation: >-
+    Remove the bypassSecurityTrustHtml() call from the pipe; sanitize the value
+    with DOMPurify (or accept Angular's default sanitization) before returning
+    it as safe HTML.
 severity: high
 type: cs-mast-s
 tech:

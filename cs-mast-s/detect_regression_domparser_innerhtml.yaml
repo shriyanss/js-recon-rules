@@ -2,6 +2,10 @@ id: detect_regression_domparser_innerhtml
 name: "XSS Regression - DOMParser re-serialization → innerHTML (React Vite, DOMParserSink component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Sanitize the parsed document's body (e.g. with DOMPurify) before re-
+    assigning its innerHTML to a live element — parsing into a detached DOM
+    tree and re-serializing does not neutralize script/event-handler content.
 severity: high
 type: cs-mast-s
 tech:

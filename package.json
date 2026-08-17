@@ -1,0 +1,11 @@
+{
+    "name": "js-recon-rules",
+    "private": true,
+    "version": "1.0.0",
+    "scripts": {
+        "export-remediation": "node scripts/export-remediation.mjs"
+    },
+    "devDependencies": {
+        "js-yaml": "^4.1.0"
+    }
+}

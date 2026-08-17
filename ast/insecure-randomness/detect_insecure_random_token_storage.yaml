@@ -11,6 +11,11 @@ description: >-
     be predicted or brute-forced by an attacker who can observe (or is
     handed) a few generated values. Fires when both the `Math.random()` call
     and the storage/cookie write appear in the same chunk/module.
+remediation: >-
+    Replace Math.random() with a cryptographically secure generator
+    (crypto.getRandomValues() or crypto.randomUUID()) for any value used as a
+    session identifier, CSRF token, or other security-sensitive token before
+    persisting it to cookies or Web Storage.
 severity: medium
 type: ast
 tech:

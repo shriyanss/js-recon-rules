@@ -2,6 +2,9 @@ id: detect_regression_dsih_react_adminposts
 name: "XSS Regression - dangerouslySetInnerHTML (React Vite, AdminPosts component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Sanitize the content with DOMPurify before passing it to
+    dangerouslySetInnerHTML's `__html` value.
 severity: high
 type: cs-mast-s
 tech:

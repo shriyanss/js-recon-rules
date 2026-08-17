@@ -13,6 +13,11 @@ description: >-
     comment body, post content, or user-controllable record). Skips the sink if
     the assigned value is the direct return of a call to a common
     sanitizer/encoder function (e.g. DOMPurify.sanitize, sanitizeHtml, escapeHtml).
+remediation: >-
+    Sanitize the HTML with DOMPurify (or an equivalent, actively-maintained
+    sanitizer) immediately before passing it to dangerouslySetInnerHTML/v-html;
+    avoid rendering raw server/response HTML unless a sanitization step sits
+    directly in the render path.
 severity: high
 type: ast
 tech:

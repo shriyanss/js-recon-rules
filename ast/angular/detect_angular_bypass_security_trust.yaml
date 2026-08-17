@@ -13,6 +13,12 @@ description: >-
     static string (a plain string literal or a template literal with no
     interpolated expressions), since a fully-static argument (e.g. a hardcoded
     embed URL) cannot carry attacker-controlled data.
+remediation: >-
+    Avoid bypassSecurityTrust* wherever the value can be influenced by user
+    input, server data, or config; let Angular's DomSanitizer perform its
+    default escaping. If a bypass is unavoidable (e.g. a known-safe embed URL),
+    restrict it to a compile-time constant or a value validated against a
+    strict allowlist before the call.
 severity: high
 type: ast
 tech:

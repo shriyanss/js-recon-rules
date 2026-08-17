@@ -2,6 +2,9 @@ id: detect_regression_event_delegation_innerhtml
 name: "XSS Regression - Event delegation + data attribute → innerHTML (React Vite, EventDelegation component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Sanitize the data-attribute value with DOMPurify before writing it to
+    innerHTML in the delegated click handler.
 severity: high
 type: cs-mast-s
 tech:

@@ -11,6 +11,11 @@ description: >-
     `https://attacker.com/allowed.example.com` or `evil-allowed.example.com`)
     satisfies the check while sending from an untrusted origin. Fires regardless
     of which sink the handler reaches, since the validation itself is the flaw.
+remediation: >-
+    Replace substring-based origin checks
+    (endsWith/includes/indexOf/startsWith) with an exact string-equality
+    comparison against one or more fully-qualified allowed origins, e.g.
+    `event.origin === "https://trusted.example.com"`.
 severity: medium
 type: ast
 tech:

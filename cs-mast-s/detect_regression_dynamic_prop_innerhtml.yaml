@@ -2,6 +2,10 @@ id: detect_regression_dynamic_prop_innerhtml
 name: "XSS Regression - Dynamic property bracket-notation assignment (React Vite, DynamicPropSink component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    Sanitize the value before the bracket-notation assignment resolves to
+    innerHTML/outerHTML at runtime — the dynamic property lookup doesn't change
+    that this is still an HTML sink.
 severity: high
 type: cs-mast-s
 tech:

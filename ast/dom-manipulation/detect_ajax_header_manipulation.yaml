@@ -13,6 +13,11 @@ description: >-
     string literal or an interpolation-free template literal, e.g.
     `["Content-Type"]: v`), since the header name isn't attacker-controllable
     in that case even though the AST shape is a computed property.
+remediation: >-
+    Never use a URL/query-string value to select or build the name of an
+    outgoing header. Whitelist a small fixed set of header names in code and
+    validate header values against what the backend expects; reject any header
+    name/value pair a client tries to set from user-controlled input.
 severity: high
 type: ast
 tech:

@@ -2,6 +2,11 @@ id: detect_regression_cspt_fetch_react_docs
 name: "CSPT Regression - fetch() with URL parameter (React Vite, Docs component)"
 author: shriyanss
 js_recon_version: ">=1.4.1-alpha.5"
+remediation: >-
+    URL-encode the path parameter with encodeURIComponent before building the
+    fetch() URL template literal, so `../` segments can't redirect the request
+    to a different API route; check sibling components using the same
+    fetch(`/api/route/${param}`) pattern too.
 severity: medium
 type: cs-mast-s
 tech:
